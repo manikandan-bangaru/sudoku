@@ -14,8 +14,8 @@ class IsolateChunkedSudoku implements ChunkedSudoku {
   final Isolate _isolate;
   final ReceivePort _mainPort;
   final _IsolateSudokuParams _params;
-  SendPort _isolatePort;
-  StreamSubscription<dynamic> _portSubscription;
+  late SendPort _isolatePort;
+  late StreamSubscription<dynamic> _portSubscription;
   final StreamController<ChunkedSudokuSquare> _squareController =
       StreamController();
   final Completer<SudokuState> _completer = Completer<SudokuState>();
@@ -70,7 +70,7 @@ Future<ChunkedSudoku> genRandomSudoku(
   // [frameProvider] is ignored
   final port = ReceivePort();
   final isolate = await Isolate.spawn(isolateChunkedSudoku, port.sendPort);
-  final params = _IsolateSudokuParams(side, difficultyMaskMap[difficulty]);
+  final params = _IsolateSudokuParams(side, difficultyMaskMap[difficulty]!);
   final chunked = IsolateChunkedSudoku(isolate, port, params);
   chunked._setupListener();
   return chunked;

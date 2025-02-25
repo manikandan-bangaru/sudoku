@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:sudoku_core/sudoku_core.dart';
 import 'package:sudoku/theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sudoku_presentation/common.dart';
+import 'package:sudoku_presentation/models.dart';
+// import 'package:sudoku_presentation/common.dart';
 import 'package:sudoku_presentation/sudoku_bloc.dart';
 import 'package:provider/provider.dart';
 
-Color getColor(SquareInfo info, BuildContext context) {
+Color? getColor(SquareInfo info, BuildContext context) {
   final theme = Provider.of<SudokuTheme>(context);
   if (info.validation == Validation.incorrect) {
     return theme.invalid;
@@ -39,25 +40,25 @@ TextStyle getTextStyle(
     SquareInfo info, double squareSide, BuildContext context) {
   final noMainNumber = info.number == 0;
   final theme = Theme.of(context);
-  final smallestTextStyle = theme.textTheme.overline;
-  final biggestTextStyle = theme.textTheme.headline4;
+  final smallestTextStyle = theme.textTheme.labelSmall;
+  final biggestTextStyle = theme.textTheme.headlineMedium;
   final absoluteBiggest = squareSide * 0.8;
-  final constrainedTextStyle = biggestTextStyle.copyWith(
+  final constrainedTextStyle = biggestTextStyle?.copyWith(
       fontSize: absoluteBiggest
-          .clamp(smallestTextStyle.fontSize, biggestTextStyle.fontSize)
+          .clamp(smallestTextStyle?.fontSize as num, biggestTextStyle?.fontSize as num)
           .toDouble());
   final style = noMainNumber ? smallestTextStyle : constrainedTextStyle;
   final color = getColor(info, context);
   if (color == null) {
-    return style;
+    return style!;
   }
   final colorBrightness = ThemeData.estimateBrightnessForColor(color);
   if (colorBrightness != theme.brightness) {
-    return style.copyWith(
+    return style!.copyWith(
         color:
             colorBrightness == Brightness.dark ? Colors.white : Colors.black87);
   }
-  return style;
+  return style!;
 }
 
 class SudokuStaticSquare extends StatelessWidget {
@@ -79,7 +80,7 @@ class SudokuStaticSquare extends StatelessWidget {
         Text(getText(info), style: getTextStyle(info, squareSide, context));
     final decoration =
         BoxDecoration(color: getColor(info, context), shape: BoxShape.circle);
-    void onTap() => context.bloc<SudokuBloc>().add(SquareTap(x, y));
+    void onTap() => context.read<SudokuBloc>().add(SquareTap(x, y));
 
     final padding = squareSide / 15;
     return Padding(
@@ -134,20 +135,20 @@ class _SquareTween extends Tween<_SquareState> {
     assert(begin != null);
     assert(end != null);
     if (t == 0) {
-      return begin;
+      return begin!;
     }
     if (t == 1) {
-      return end;
+      return end!;
     }
     final textPos = Curves.easeIn.transform(t);
     final squareColor = Color.lerp(
-        begin.squareColor, end.squareColor, Curves.easeIn.transform(t));
+        begin?.squareColor, end?.squareColor, Curves.easeIn.transform(t));
     Curve decorationCurve = Curves.bounceInOut;
     Animatable<double> decorationTween =
-        Tween<double>(begin: begin.decorationSize, end: end.decorationSize);
-    if (begin.decorationSize == 1 &&
-        begin.decorationSize == end.decorationSize &&
-        begin.squareColor != squareColor) {
+        Tween<double>(begin: begin?.decorationSize, end: end?.decorationSize);
+    if (begin?.decorationSize == 1 &&
+        begin?.decorationSize == end?.decorationSize &&
+        begin?.squareColor != squareColor) {
       decorationCurve = Curves.easeInOut;
       decorationTween = TweenSequence<double>([
         TweenSequenceItem<double>(
@@ -157,24 +158,24 @@ class _SquareTween extends Tween<_SquareState> {
       ]);
     }
     final textAlign = Alignment.lerp(
-        begin.textAlign, end.textAlign, Curves.bounceInOut.transform(t));
+        begin?.textAlign, end?.textAlign, Curves.bounceInOut.transform(t));
     final style =
-        TextStyle.lerp(begin.style, end.style, Curves.easeIn.transform(t));
+        TextStyle.lerp(begin?.style, end?.style, Curves.easeIn.transform(t));
     return _SquareState._(
         textPos,
-        squareColor,
+        squareColor!,
         decorationTween.transform(decorationCurve.transform(t)),
-        textAlign,
-        style);
+        textAlign!,
+        style!);
   }
 }
 
 class _SudokuSquareState extends State<SudokuAnimatedSquare>
     with SingleTickerProviderStateMixin {
   SquareInfo oldInfo = SquareInfo.empty;
-  SquareInfo targetInfo;
-  AnimationController controller;
-  _SquareTween tween;
+  late SquareInfo targetInfo;
+  late AnimationController controller;
+  late _SquareTween tween;
 
   @override
   void initState() {
@@ -208,7 +209,7 @@ class _SudokuSquareState extends State<SudokuAnimatedSquare>
   }
 
   void onTap() {
-    context.bloc<SudokuBloc>().add(SquareTap(widget.x, widget.y));
+    context.read<SudokuBloc>().add(SquareTap(widget.x, widget.y));
   }
 
   @override
@@ -222,7 +223,7 @@ class _SudokuSquareState extends State<SudokuAnimatedSquare>
     final align = getTextAlignment(info);
     final style = getTextStyle(info, squareSide, context);
     return _SquareState._(
-        isEnd ? 1.0 : 0.0, color, color == null ? 0 : 1.0, align, style);
+        isEnd ? 1.0 : 0.0, color!, color == null ? 0 : 1.0, align, style);
   }
 
   Widget buildWidget(BuildContext context) {

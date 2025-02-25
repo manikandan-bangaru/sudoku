@@ -49,7 +49,7 @@ class SudokuButton extends MaterialButton {
     //final mainColor =  useSecondary ? theme.secondary : theme.main;
     //debugger();
     buttonTheme = buttonTheme.copyWith(
-        buttonColor: filled ? mainColor : materialTheme.backgroundColor,
+        buttonColor: filled ? mainColor : materialTheme.colorScheme.background,
         highlightColor: filled ? null : mainDarkenedColor.withAlpha(80),
         splashColor: filled ? null : mainColor);
     final borderColor =
@@ -63,8 +63,8 @@ class SudokuButton extends MaterialButton {
       onLongPress: onLongPress,
       onHighlightChanged: onHighlightChanged,
       fillColor: buttonTheme.getFillColor(this),
-      textStyle: (textStyle ?? materialTheme.textTheme.button)
-          .copyWith(color: buttonTheme.getTextColor(this)),
+      textStyle: (textStyle ?? materialTheme.textTheme.labelLarge)
+          ?.copyWith(color: buttonTheme.getTextColor(this)),
       focusColor: buttonTheme.getFocusColor(this),
       hoverColor: buttonTheme.getHoverColor(this),
       highlightColor: buttonTheme.getHighlightColor(this),

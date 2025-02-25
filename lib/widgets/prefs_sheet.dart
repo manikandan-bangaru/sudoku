@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sudoku/widgets/sudoku_button.dart';
 
-import 'package:sudoku_presentation/common.dart';
+// import 'package:sudoku_presentation/common.dart';
+import 'package:sudoku_presentation/models.dart';
 import 'package:sudoku_presentation/preferences_bloc.dart';
 
 Color getTextColorForBrightness(Brightness b) =>
@@ -71,9 +72,8 @@ Widget buildSingleThemePreview(MapEntry<AvailableTheme, SudokuTheme> entry,
         useSecondary: false,
         onPressed: enabled
             ? () => BlocProvider.of<PreferencesBloc>(context).add(
-                PrefsEvent<AvailableTheme>(
-                    entry.key, PrefsEventType.themeUpdate))
-            : null,
+            ThemeUpdatedEvent(entry.key))
+            : () => {},
         constraints: expand,
         child: Text(
           text,
@@ -86,7 +86,7 @@ Widget buildSectionTitle(String title, BuildContext context) => Padding(
       padding: const EdgeInsets.all(8.0),
       child: Text(
         title,
-        style: Theme.of(context).textTheme.headline5,
+        style: Theme.of(context).textTheme.headlineSmall,
       ),
     );
 
@@ -113,17 +113,17 @@ List<Widget> buildAnimations(AnimationOptions opts, BuildContext context) {
   final checksEnabled = opts.speed != AnimationSpeed.none;
   final sliderEnabled = opts.hasAnimations || opts.speed == AnimationSpeed.none;
   final speed = !opts.hasAnimations ? AnimationSpeed.none : opts.speed;
-  Widget buildSingle(String name, bool enabled, ValueChanged<bool> onChange) {
+  ValueChanged<bool> vChange = (bool b) {};
+  Widget buildSingle(String name, bool enabled, ValueChanged<bool?> onChange) {
     return CheckboxListTile(
         value: enabled,
-        onChanged: checksEnabled ? onChange : null,
+        onChanged: checksEnabled ? onChange  : null,
         title: Text(name),
         activeColor: Theme.of(context).colorScheme.secondary,
         checkColor: Theme.of(context).colorScheme.onPrimary);
   }
-
   void update(AnimationOptions newOpts) => bloc
-      .add(PrefsEvent<AnimationOptions>(newOpts, PrefsEventType.animUpdate));
+      .add(AnimationOptionsUpdatedEvent(newOpts));
   return [
     SliverToBoxAdapter(child: buildSectionTitle("Animações:", context)),
     SliverList(
@@ -142,18 +142,18 @@ List<Widget> buildAnimations(AnimationOptions opts, BuildContext context) {
       ),
       buildSubSectionTitle("Seleção"),
       buildSingle("Tamanho", opts.selectSize,
-          (b) => update(opts.copyWith(selectSize: b))),
+          (b) => update(opts.copyWith(selectSize: b ?? false))),
       buildSingle("Cor", opts.selectColor,
-          (b) => update(opts.copyWith(selectColor: b))),
+          (b) => update(opts.copyWith(selectColor:  b ?? false))),
       buildSubSectionTitle("Texto"),
       buildSingle("Posição", opts.textPosition,
-          (b) => update(opts.copyWith(textPosition: b))),
+          (b) => update(opts.copyWith(textPosition:  b ?? false))),
       buildSingle("Opacidade", opts.textOpacity,
-          (b) => update(opts.copyWith(textOpacity: b))),
+          (b) => update(opts.copyWith(textOpacity:  b ?? false))),
       buildSingle(
-          "Tamanho", opts.textSize, (b) => update(opts.copyWith(textSize: b))),
+          "Tamanho", opts.textSize, (b) => update(opts.copyWith(textSize:  b ?? false))),
       buildSingle(
-          "Cor", opts.textColor, (b) => update(opts.copyWith(textColor: b))),
+          "Cor", opts.textColor, (b) => update(opts.copyWith(textColor:  b ?? false))),
     ]))
   ];
 }

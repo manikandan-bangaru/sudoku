@@ -22,7 +22,7 @@ class SudokuActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // ignore: close_sinks
-    final bloc = context.bloc<SudokuBloc>();
+    final bloc = context.read<SudokuBloc>();
 
     final buttonConstraints = BoxConstraints(
       minWidth: isPortrait ? 52.0 : 36.0,
@@ -44,7 +44,7 @@ class SudokuActions extends StatelessWidget {
           shapeBuilder: shapeBuilder,
           constraints: buttonConstraints,
           filled: filled,
-          onPressed: enabled ? onPressed : null,
+          onPressed: enabled ? onPressed :  () => {},
           child: Icon(icon),
         );
     final children = [
@@ -65,7 +65,7 @@ class SudokuActions extends StatelessWidget {
       Expanded(
           flex: 3,
           child: buildButton(
-              icon: Icons.undo, onPressed: (canRewind ?? false) ? undo : null)),
+              icon: Icons.undo, onPressed: (canRewind ?? false) ? undo :  () =>{})),
       const Spacer(),
     ];
     return !isPortrait

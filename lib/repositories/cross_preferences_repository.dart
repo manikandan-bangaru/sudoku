@@ -1,5 +1,6 @@
 import 'package:cross_local_storage/cross_local_storage.dart';
-import 'package:sudoku_presentation/common.dart';
+// import 'package:sudoku_presentation/common.dart';
+import 'package:sudoku_presentation/models.dart';
 import 'package:sudoku_presentation/repositories.dart';
 
 class CrossPreferencesRepository implements PreferencesRepository {
@@ -11,7 +12,7 @@ class CrossPreferencesRepository implements PreferencesRepository {
     final pref = await prefs;
     final optsStrings = pref.getStringList("animationOptions");
     if (optsStrings == null || optsStrings.isEmpty) {
-      return null;
+      return AnimationOptions();
     }
     final options = AnimationOptions.parse(optsStrings);
     return options;
@@ -19,13 +20,13 @@ class CrossPreferencesRepository implements PreferencesRepository {
 
   @override
   Future<String> getCurrentTheme() =>
-      prefs.then((pref) => pref.getString("currentTheme"));
+      prefs.then((pref) => pref.getString("currentTheme")!);
 
   @override
-  Future<int> getMainMenuX() => prefs.then((pref) => pref.getInt("mainMenuX"));
+  Future<int> getMainMenuX() => prefs.then((pref) => pref.getInt("mainMenuX")!);
 
   @override
-  Future<int> getMainMenuY() => prefs.then((pref) => pref.getInt("mainMenuY"));
+  Future<int> getMainMenuY() => prefs.then((pref) => pref.getInt("mainMenuY")!);
 
   @override
   Future<void> updateAnimationOptions(AnimationOptions options) async {
@@ -48,7 +49,7 @@ class CrossPreferencesRepository implements PreferencesRepository {
 
   @override
   Future<bool> getAknowledgement() =>
-      prefs.then((pref) => pref.getBool("storageAknowledgement"));
+      prefs.then((pref) => pref.getBool("storageAknowledgement")!);
 
   @override
   Future<void> updateAknowledgement(bool a) =>

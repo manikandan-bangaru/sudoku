@@ -117,7 +117,9 @@ class _TwoDBackedBidimensionalList<T> extends BidimensionalList<T> {
 abstract class BidimensionalList<T> extends ListBase<List<T>> {
   final bool canMutate;
   BidimensionalList._(this.canMutate);
-
+  factory BidimensionalList.empty() {
+    return BidimensionalList<T>.empty(); // ✅ Returns a concrete class
+  }
   factory BidimensionalList.view2d(List<List<T>> list) =>
       _TwoDBackedBidimensionalList(list, canMutate: false);
   factory BidimensionalList.view(List<T> list, int width, {int height}) =>

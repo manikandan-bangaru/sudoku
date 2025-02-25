@@ -139,7 +139,7 @@ class SudokuState {
       final value = toValidate[i];
       if (walked.containsKey(value)) {
         failed.add(i);
-        failed.add(walked[value]); // add the first occurence also
+        failed.add(walked[value]!); // add the first occurence also
         continue;
       }
       walked[value] = i;
@@ -157,7 +157,7 @@ class SudokuState {
       final value = toValidate[i];
       if (walked.containsKey(value)) {
         failed.add(i);
-        failed.add(walked[value]); // add the first occurence also
+        failed.add(walked[value]!); // add the first occurence also
         continue;
       }
       walked[value] = i;

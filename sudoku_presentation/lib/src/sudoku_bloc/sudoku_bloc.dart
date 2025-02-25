@@ -13,20 +13,21 @@ import 'event.dart';
 import 'state.dart';
 
 class SudokuBloc extends Bloc<SudokuEvent, SudokuBlocState> {
-  SudokuBloc({this.definition, this.repository, this.onException, this.frameProvider});
+  SudokuBloc(this.definition, this.repository, this.onException, this.frameProvider) : super(SudokuBlocStateWithInfo( BidimensionalList<SquareInfo>.filled(definition.side, SquareInfo.empty),[])) ;
+
   final SudokuConfiguration definition;
   final BoardRepository repository;
-  final ExceptionHandler onException;
+  final ExceptionHandler? onException;
   final NextFrameProvider frameProvider;
 
   final Queue<SquareDelta> deltas = DoubleLinkedQueue();
-  List<int> selectedSquare; // [x, y] or null in case none
-  int selectedNum; // number or null
-  SudokuState sudokuState; // will be the same across the lifetime of this bloc
+  List<int>? selectedSquare; // [x, y] or null in case none
+  int? selectedNum; // number or null
+  late SudokuState sudokuState; // will be the same across the lifetime of this bloc
   MarkType markType = MarkType.concrete;
-  BidimensionalList<Validation> validation;
-  ChunkedSudoku chunked;
-  StreamSubscription<ChunkedSudokuSquare> chunkedSubs;
+  late BidimensionalList<Validation> validation;
+  ChunkedSudoku? chunked;
+  StreamSubscription<ChunkedSudokuSquare>? chunkedSubs;
   bool closed = false;
 
   Future<void> scheduleSave(SudokuSnapshot snap) async {
@@ -36,8 +37,8 @@ class SudokuBloc extends Bloc<SudokuEvent, SudokuBlocState> {
   }
 
   Future<void> cleanupChunked() async {
-    await chunkedSubs.cancel();
-    await chunked.cancel();
+    await chunkedSubs?.cancel();
+    await chunked?.cancel();
     chunked = null;
     chunkedSubs = null;
   }
@@ -48,7 +49,7 @@ class SudokuBloc extends Bloc<SudokuEvent, SudokuBlocState> {
       if (onException == null) {
         debugger();
       } else {
-        onException(error);
+        onException!(error);
       }
     } else {
       add(SudokuErrorEvent((error as Error).withMessage('Erro inesperado no gerenciador de preferencias.')));
@@ -57,7 +58,7 @@ class SudokuBloc extends Bloc<SudokuEvent, SudokuBlocState> {
   }
 
   Future<void> initialize(StateSource source) async {
-    SudokuState state;
+    SudokuState? state;
     switch (source) {
       case StateSource.storage:
         var status = repository.currentStatus();
@@ -74,8 +75,8 @@ class SudokuBloc extends Bloc<SudokuEvent, SudokuBlocState> {
         chunked = await genRandomSudoku(definition.side, definition.difficulty, frameProvider).withErrorMessage(
             "Ao tentar criar um Sudoku, ocorreu um erro inesperado.");
         chunkedSubs =
-            chunked.squares.listen((square) => add(PieceLoadedEvent(square)));
-        state = await chunked.onComplete;
+            chunked?.squares.listen((square) => add(PieceLoadedEvent(square)));
+        state = await chunked?.onComplete;
         await cleanupChunked();
         break;
       // We will access the repository again to get which [source] we want, and
@@ -94,10 +95,9 @@ class SudokuBloc extends Bloc<SudokuEvent, SudokuBlocState> {
         return initialize(hasState ? StateSource.storage : StateSource.random);
         break;
     }
-    add(LoadedEvent(state));
+    add(LoadedEvent(state!));
   }
 
-  @override
   SudokuBlocState get initialState {
     validation = BidimensionalList<Validation>.filled(
         definition.side, Validation.notValidated);
@@ -118,7 +118,7 @@ class SudokuBloc extends Bloc<SudokuEvent, SudokuBlocState> {
         (int x, int y) {
       final isSelected = selectedSquare == null
           ? false
-          : selectedSquare[0] == x && selectedSquare[1] == y;
+          : selectedSquare?[0] == x && selectedSquare?[1] == y;
       final initialN = sudokuState.initialState[y][x];
       final isInitial = initialN != 0;
       final number = isInitial ? initialN : sudokuState.state[y][x];
@@ -200,7 +200,7 @@ class SudokuBloc extends Bloc<SudokuEvent, SudokuBlocState> {
     }
     if (selectedNum != null) {
       // set this num to the selected num
-      squareMark(selectedNum, x, y);
+      squareMark(selectedNum!, x, y);
     } else {
       // select this square
       selectedSquare = [x, y];
@@ -240,7 +240,7 @@ class SudokuBloc extends Bloc<SudokuEvent, SudokuBlocState> {
       selectedNum = null;
     }
     if (selectedSquare != null) {
-      squareMark(n, selectedSquare[0], selectedSquare[1]);
+      squareMark(n, selectedSquare![0], selectedSquare![1]);
       selectedNum = null;
     }
   }
@@ -287,11 +287,11 @@ class SudokuBloc extends Bloc<SudokuEvent, SudokuBlocState> {
     if (event is PieceLoadedEvent && !handled) {
       handled = true;
       if (event.piece.n != 0) {
-        final newSquares = stateWithInfo.squares.toList();
-        final prevInfo = newSquares[event.piece.y][event.piece.x];
-        newSquares[event.piece.y][event.piece.x] =
-            prevInfo.copyWith(number: event.piece.n, isInitial: true);
-        yield SudokuLoadingState(newSquares, stateWithInfo.numbers);
+        final newSquares = stateWithInfo?.squares.toList();
+        final prevInfo = newSquares?[event.piece.y][event.piece.x];
+        newSquares?[event.piece.y][event.piece.x] =
+            prevInfo!.copyWith(number: event.piece.n, isInitial: true);
+        yield SudokuLoadingState(newSquares!, stateWithInfo!.numbers);
       }
     }
 
@@ -347,13 +347,13 @@ class SudokuBloc extends Bloc<SudokuEvent, SudokuBlocState> {
 
     if (event is DeleteSudoku && !handled) {
       handled = true;
-      if (!snap.wasDeleted) {
+      if (!snap!.wasDeleted) {
         if (repository.currentStatus().type == StorageStatusType.ready) {
           await repository.deleteSudoku(definition.side, definition.difficulty).withErrorMessage(
               "Houve um erro inesperado ao deletar o Sudoku armazenado");
         }
       }
-      yield snap.deleted();
+      yield snap!.deleted();
     }
     
     if (!handled) {

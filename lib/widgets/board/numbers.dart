@@ -28,21 +28,21 @@ class SudokuNumbers extends StatelessWidget {
 
   Widget renderNumber(NumberInfo info, BuildContext context) {
     void onTap() {
-      context.bloc<SudokuBloc>().add(NumberTap(info.number));
+      context.read<SudokuBloc>().add(NumberTap(info.number));
     }
 
     final textOrIcon = info.number == 0
         ? const Icon(Icons.clear)
         : Text(info.number.toString());
-    final textStyle = Theme.of(context).textTheme.headline4;
+    final textStyle = Theme.of(context).textTheme.headlineMedium;
     return Padding(
       padding: const EdgeInsets.all(3.0),
       child: SudokuButton(
         filled: info.isSelected,
-        textStyle: textStyle,
+        textStyle: textStyle!,
         constraints: buttonConstraints,
         padding: EdgeInsets.zero,
-        onPressed: enabled ? onTap : null,
+        onPressed: enabled ? onTap : ()=>{},
         shapeBuilder: (c) => CircleBorder(side: BorderSide(color: c)),
         child: AspectRatio(aspectRatio: 1, child: Center(child: textOrIcon)),
       ),

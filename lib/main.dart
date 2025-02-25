@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sudoku_presentation/common.dart';
+import 'package:sudoku_core/sudoku_core.dart';
+import 'package:sudoku_presentation/errors.dart';
+import 'package:sudoku_presentation/models.dart';
+// import 'package:sudoku_presentation/common.dart';
 import 'package:sudoku_presentation/preferences_bloc.dart';
 import 'package:sudoku_presentation/main_menu_bloc.dart';
 import 'package:sudoku_presentation/sudoku_bloc.dart';
@@ -12,6 +15,7 @@ import 'package:sudoku/theme.dart';
 import 'package:sudoku/widgets/board/sudoku_board_view.dart';
 import 'package:sudoku/widgets/main_menu_view.dart';
 import 'package:provider/provider.dart';
+import 'package:sudoku_presentation/sudoku_configuration.dart';
 
 void main() {
   runApp(MultiRepositoryProvider(
@@ -23,11 +27,10 @@ void main() {
       ],
       child: BlocProvider<PreferencesBloc>(
         create: (BuildContext context) => PreferencesBloc(
-            RepositoryProvider.of<PreferencesRepository>(context)),
+            RepositoryProvider.of<PreferencesRepository>(context),(Object excepion) => {}),
         child: RootView(),
       )));
 }
-
 class RootView extends StatelessWidget {
   static bool condition(PrefsState prev, PrefsState next) {
     if (prev is PrefsSnap && next is PrefsSnap) {
@@ -37,19 +40,19 @@ class RootView extends StatelessWidget {
   }
 
   static Route<dynamic> onGeneratedRoute(RouteSettings routeSettings) {
-    final name = routeSettings.name.split("/").single;
+    final name = routeSettings.name?.split("/").single;
     SudokuConfiguration sudokuConfiguration;
     if (routeSettings.arguments != null) {
       sudokuConfiguration = routeSettings.arguments as SudokuConfiguration;
     } else {
-      final numbers = name.split("x").map(int.parse).toList();
-      sudokuConfiguration = SudokuConfiguration(numbers[0], numbers[1]);
+      final numbers = name?.split("x").map(int.parse).toList();
+      sudokuConfiguration = SudokuConfiguration(numbers![0], numbers![1]);
     }
     return MaterialPageRoute<void>(
         builder: (context) => BlocProvider<SudokuBloc>(
               create: (BuildContext context) => SudokuBloc(
                 sudokuConfiguration,
-                RepositoryProvider.of<BoardRepository>(context),
+                RepositoryProvider.of<BoardRepository>(context),(Object exception) => {},() async => {},
               ),
               child: SudokuBoardView(),
             ));
@@ -63,33 +66,35 @@ class RootView extends StatelessWidget {
 
         final availableTheme = (state?.theme) ?? AvailableTheme.materialLight;
         final theme = SudokuTheme.availableThemeMap[availableTheme];
-        final colorScheme = theme.brightness == Brightness.light
+        final colorScheme = theme?.brightness == Brightness.light
             ? ColorScheme.light(
-                primary: theme.main,
-                secondary: theme.secondary,
-                primaryVariant: theme.mainDarkened,
-                secondaryVariant: theme.secondaryDarkened)
+                primary: theme!.main,
+                secondary: theme!.secondary,
+                // primaryVariant: theme.mainDarkened,
+                // secondaryVariant: theme.secondaryDarkened
+        )
             : ColorScheme.dark(
-                primary: theme.main,
-                secondary: theme.secondary,
-                primaryVariant: theme.mainDarkened,
-                secondaryVariant: theme.secondaryDarkened);
-        SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
-        final isDark = theme.brightness == Brightness.dark;
+                primary: theme!.main,
+                secondary: theme!.secondary,
+                // primaryVariant: theme.mainDarkened,
+                // secondaryVariant: theme.secondaryDarkened
+        );
+        SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.bottom]);
+        final isDark = theme?.brightness == Brightness.dark;
         final overlayStyle = SystemUiOverlayStyle(
             statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
             statusBarIconBrightness:
                 isDark ? Brightness.light : Brightness.dark,
             statusBarColor: Colors.transparent,
             systemNavigationBarDividerColor: Colors.transparent,
-            systemNavigationBarColor: theme.background,
+            systemNavigationBarColor: theme?.background,
             systemNavigationBarIconBrightness:
                 isDark ? Brightness.light : Brightness.dark);
         final sliderTheme = SliderThemeData(
-            activeTrackColor: theme.secondary, thumbColor: theme.secondary);
+            activeTrackColor: theme?.secondary, thumbColor: theme?.secondary);
         final dialogTheme = DialogTheme(
             backgroundColor:
-                Color.alphaBlend(theme.main.withAlpha(10), theme.background),
+                Color.alphaBlend(theme!.main.withAlpha(10), theme.background),
             shape: RoundedRectangleBorder(
                 side: BorderSide(color: theme.mainDarkened, width: 2.0),
                 borderRadius: BorderRadius.circular(8.0)));
@@ -104,20 +109,20 @@ class RootView extends StatelessWidget {
             child: MaterialApp(
               theme: themeData.copyWith(
                   buttonTheme: themeData.buttonTheme.copyWith(
-                      buttonColor: theme.secondary,
+                      buttonColor: theme?.secondary,
                       textTheme: ButtonTextTheme.primary)),
               title: "Sudoku",
               home: BlocProvider<MainMenuBloc>(
                   create: (BuildContext context) => MainMenuBloc(
                       RepositoryProvider.of<BoardRepository>(context),
-                      RepositoryProvider.of<PreferencesRepository>(context)),
+                      RepositoryProvider.of<PreferencesRepository>(context), (Object o)=>{}),
                   child: MainMenu()),
               onGenerateRoute: onGeneratedRoute,
             ),
           ),
         );
       },
-      condition: condition,
+      buildWhen: condition,
     );
   }
 }

@@ -11,7 +11,7 @@ class SudokuVec {
   String toString() => '[$x, $y]';
 }
 
-SudokuVec /*?*/ findUnassignedLocation(BidimensionalList<int> grid) {
+SudokuVec? /*?*/ findUnassignedLocation(BidimensionalList<int> grid) {
   final side = grid.length;
   for (var y = 0; y < side; y++) {
     for (var x = 0; x < side; x++) {

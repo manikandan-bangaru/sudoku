@@ -11,7 +11,7 @@ class PreferencesBloc extends Bloc<PrefsEvent, PrefsState> {
   final PreferencesRepository preferencesRepository;
   final ExceptionHandler onException;
 
-  PreferencesBloc({this.preferencesRepository, this.onException});
+  PreferencesBloc(this.preferencesRepository, this.onException) : super(LoadingPrefsState());
 
   bool closed = false;
 
@@ -81,12 +81,12 @@ class PreferencesBloc extends Bloc<PrefsEvent, PrefsState> {
 
     if (event is AnimationOptionsUpdatedEvent && !handled) {
       handled = true;
-      yield snap.copyWith(animationOptions: event.animationOptions);
+      yield snap!.copyWith(animationOptions: event.animationOptions);
       updateAnim(event.animationOptions);
     }
     if (event is ThemeUpdatedEvent && !handled) {
       handled = true;
-      yield snap.copyWith(theme: event.newTheme);
+      yield snap!.copyWith(theme: event.newTheme);
       updateTheme(event.newTheme);
     }
     if (!handled) {

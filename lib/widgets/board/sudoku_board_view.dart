@@ -13,7 +13,7 @@ class SudokuBoardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PreferencesBloc, PrefsState>(
-        condition: (prev, next) {
+        buildWhen: (prev, next) {
           if (prev is PrefsSnap && next is PrefsSnap) {
             return prev.animationOptions != next.animationOptions;
           }
@@ -52,8 +52,8 @@ class SudokuBoardView extends StatelessWidget {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(_state.userFriendlyMessage),
-                            Text("Mensagem do erro: ${_state.message}")
+                            Text(" aa"),
+                            Text("Mensagem do erro: ")
                           ],
                         ),
                       ),
@@ -76,7 +76,7 @@ class SudokuBoardView extends StatelessWidget {
                                 title: const Text("Parabéns"),
                                 content: const Text("Você completou o Sudoku!"),
                                 actions: [
-                                  FlatButton(
+                                  TextButton(
                                       onPressed: pop,
                                       child: const Text("Continuar"))
                                 ]);
@@ -90,8 +90,8 @@ class SudokuBoardView extends StatelessWidget {
                   final sudokuActions = Padding(
                       padding: const EdgeInsets.all(6.0),
                       child: SudokuActions(
-                          canRewind: snapOrNull?.canRewind,
-                          markType: snapOrNull?.markType,
+                          canRewind: snapOrNull!.canRewind,
+                          markType: snapOrNull!.markType,
                           enabled: snapOrNull != null,
                           isPortrait: !actionsOnChildren));
 
@@ -135,8 +135,10 @@ class SudokuBoardView extends StatelessWidget {
                         !actionsOnChildren ? sudokuActions : null,
                     body: CustomScrollView(
                       slivers: [sliverAppBar, widget],
-                      physics: const SnapToEdgesAndPointsPhysics(
-                          points: [kToolbarHeight]),
+                      physics: SnapToEdgesAndPointsPhysics(
+                        points: [kToolbarHeight],
+                        parent: const AlwaysScrollableScrollPhysics(),
+                      ),
                     ),
                   );
                 })));
@@ -160,9 +162,11 @@ class SnapToEdgesAndPointsPhysics extends ScrollPhysics {
   final List<double> points;
 
   @override
-  SnapToEdgesAndPointsPhysics applyTo(ScrollPhysics ancestor) {
+  SnapToEdgesAndPointsPhysics applyTo(ScrollPhysics? ancestor) {
     return SnapToEdgesAndPointsPhysics(
-        points: points, parent: buildParent(ancestor));
+      points: points,
+      parent: buildParent(ancestor)!,
+    );
   }
 
   // 0 = start of scroll
@@ -174,7 +178,7 @@ class SnapToEdgesAndPointsPhysics extends ScrollPhysics {
     final currentPos = position.pixels;
     int startI = 0;
     double start = 0.0;
-    double end;
+    double? end;
     for (var i = 0; i < sortedPoints.length; i++) {
       final point = sortedPoints[i];
       if (point < currentPos) {
@@ -213,7 +217,7 @@ class SnapToEdgesAndPointsPhysics extends ScrollPhysics {
   }
 
   @override
-  Simulation createBallisticSimulation(
+  Simulation? createBallisticSimulation(
       ScrollMetrics position, double velocity) {
     final Tolerance tolerance = this.tolerance;
     final double target = _getTargetPixels(position, tolerance, velocity);

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart'
     show Brightness, Color, Colors, MaterialColor;
 import 'package:meta/meta.dart';
-import 'package:sudoku_presentation/common.dart';
+import 'package:sudoku_presentation/models.dart';
+// import 'package:sudoku_presentation/common.dart';
 
 @immutable
 class SudokuTheme {
@@ -25,10 +26,10 @@ class SudokuTheme {
     final isDark = brightness == Brightness.dark;
     mixMainBg ??= isDark;
     if (main is MaterialColor && isDark) {
-      main = (main as MaterialColor)[200];
+      main = (main as MaterialColor)[200]!;
     }
     if (secondary is MaterialColor && isDark) {
-      secondary = (secondary as MaterialColor)[200];
+      secondary = (secondary as MaterialColor)[200]!;
     }
     invalid ??= isDark ? Colors.redAccent : Colors.red;
     final _materialBg =
@@ -129,7 +130,7 @@ class SudokuTheme {
   };
   static final SudokuTheme darkGreen = SudokuTheme.dark(main: Colors.green);
   static final SudokuTheme blackGreen = SudokuTheme.dark(
-      main: Colors.green[500], background: const Color(0xFF0A0A0A));
+      main: Colors.green[500]!, background: const Color(0xFF0A0A0A));
   static final SudokuTheme materialLight =
       SudokuTheme.light(main: Colors.teal, secondary: Colors.blue);
   static final SudokuTheme materialDark =

@@ -15,7 +15,7 @@ extension ToUserFriendly on Object {
       if (casted.value is Exception) {
         return UserFriendlyException(casted.value as Exception, userFriendlyMessage);
       }
-      return UserFriendly<Object>(casted.value, userFriendlyMessage);
+      return UserFriendly<Object>(casted.value as Object, userFriendlyMessage);
     }
 
     if (this is Error) {
@@ -38,7 +38,7 @@ extension ExceptionWithMessage on Exception {
 }
 
 // Ignore an error. Just for readability
-T ignore<T>([dynamic _, dynamic __]) => null;
+T? ignore<T>([dynamic _, dynamic __]) => null;
 
 extension ToUserFriendlyFuture<T> on Future<T> {
   Future<T> withErrorMessage(String userFriendlyMessage, {Function onError, bool Function(Object) test}) {
@@ -69,7 +69,7 @@ extension RetryFutureCallback<T> on Future<T> Function() {
   }
 }
 
-@immutable
+
 class UserFriendly<T> {
   final T value;
   final String userFriendlyMessage;
@@ -84,7 +84,7 @@ class UserFriendlyError extends UserFriendly<Error> implements Error {
   const UserFriendlyError(Error value, String userFriendlyMessage) : super(value, userFriendlyMessage);
 
   @override
-  StackTrace get stackTrace => value.stackTrace;
+  StackTrace? get stackTrace => value.stackTrace;
 }
 
 class UserFriendlyException extends UserFriendly<Exception> implements Exception {

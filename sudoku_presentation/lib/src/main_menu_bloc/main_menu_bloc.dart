@@ -13,7 +13,7 @@ class MainMenuBloc extends Bloc<MainMenuEvent, MainMenuState> {
   final BoardRepository boardRepository;
   final PreferencesRepository preferencesRepository;
   final ExceptionHandler onException;
-  MainMenuBloc({this.boardRepository, this.preferencesRepository, this.onException});
+  MainMenuBloc(this.boardRepository, this.preferencesRepository, this.onException) : super(LoadingMainMenu());
   
   bool closed = false;
 
@@ -31,11 +31,11 @@ class MainMenuBloc extends Bloc<MainMenuEvent, MainMenuState> {
     super.onError(error, stackTrace);
   }
 
-  Future<BidimensionalList<SudokuConfiguration>> loadConfigurations() async {
+  Future<BidimensionalList<SudokuConfiguration>?> loadConfigurations() async {
     final isStorageSupported =
         boardRepository.currentStatus().type == StorageStatusType.ready;
 
-    final sudokuConfigurations = BidimensionalList<SudokuConfiguration>.filled(
+    final sudokuConfigurations = BidimensionalList<SudokuConfiguration?>.filled(
         SudokuDifficulty.values.length, null,
         height: SudokuConfiguration.factories.length);
 
@@ -95,7 +95,7 @@ class MainMenuBloc extends Bloc<MainMenuEvent, MainMenuState> {
     final savedX = await getStoredX();
     final savedY = await getStoredY();
     final state = MainMenuSnap(
-        configurations: sudokuConfigurations,
+        configurations: sudokuConfigurations!,
         difficultyX: savedX,
         sideY: savedY,
         storage: storage);
@@ -138,22 +138,22 @@ class MainMenuBloc extends Bloc<MainMenuEvent, MainMenuState> {
     if (event is ChangeX && !handled) {
       handled = true;
       await preferencesRepository.updateMainMenuX(event.x);
-      yield snap.copyWith(difficultyX: event.x);
+      yield snap!.copyWith(difficultyX: event.x);
     }
     if (event is ChangeY && !handled) {
       handled = true;
       await preferencesRepository.updateMainMenuY(event.y);
-      yield snap.copyWith(sideY: event.y);
+      yield snap!.copyWith(sideY: event.y);
     }
     if (event is ReloadConfigurations && !handled) {
       handled = true;
-      yield snap.copyWith(configurations: await loadConfigurations());
+      yield snap!.copyWith(configurations: await loadConfigurations() ?? BidimensionalList<SudokuConfiguration>.empty());
     }
     if (event is AknowledgeStorageEvent && !handled) {
       handled = true;
       await didAknowledge();
       yield snap
-          .copyWith(storage: StorageAknowledgment.unsupportedAknowledged);
+          !.copyWith(storage: StorageAknowledgment.unsupportedAknowledged);
     }
     if (!handled) {
       throw StateException('$event was not handled').withErrorMessage('Houve um probleminha no menu principal');

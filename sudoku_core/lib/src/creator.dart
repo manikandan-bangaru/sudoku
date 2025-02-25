@@ -11,7 +11,7 @@ class TimedStreamTransformer<T> extends StreamTransformerBase<T, T> {
   final Duration frameQuota;
   final NextFrameProvider frameProvider;
   final Stopwatch timer = Stopwatch();
-  StreamSubscription<T> subs;
+  late StreamSubscription<T> subs;
   StreamController<T> controller = StreamController<T>();
   bool pausedOrStopped = false;
 

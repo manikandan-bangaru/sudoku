@@ -3,8 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku/theme.dart';
 import 'package:sudoku/widgets/board/board.dart';
-import 'package:sudoku_presentation/common.dart';
+// import 'package:sudoku_presentation/common.dart';
 import 'package:sudoku_presentation/main_menu_bloc.dart';
+import 'package:sudoku_presentation/sudoku_configuration.dart';
 
 import 'prefs_sheet.dart';
 import 'sudoku_button.dart';
@@ -49,13 +50,13 @@ class MainMenu extends StatelessWidget {
               content: const Text(
                   "Você está usando uma plataforma que ainda não suporta salvar Sudokus. Caso você saia, todo o seu progresso será perdido."),
               actions: [
-                FlatButton(
+                TextButton(
                     onPressed: () => Navigator.of(context).pop(true),
                     child: const Text("Aceitar"))
               ],
             );
           });
-      if (!didAccept) {
+      if (!didAccept!) {
         return;
       }
       BlocProvider.of<MainMenuBloc>(context).add(AknowledgeStorageEvent());
@@ -80,8 +81,8 @@ class MainMenu extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(_state.userFriendlyMessage),
-                Text("Mensagem do erro: ${_state.message}")
+                Text("state.userFriendlyMessage"),
+                Text("Mensagem do erro: ")
               ],
             ),
           ),
@@ -131,7 +132,7 @@ class MainMenu extends StatelessWidget {
           SudokuButton(
             onPressed: config.source == StateSource.storage
                 ? () => launch(config, state.storage, context)
-                : null,
+                : () => {},
             filled: true,
             child: const Text("Continuar"),
           )

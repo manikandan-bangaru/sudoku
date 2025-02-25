@@ -4,10 +4,12 @@ import 'dart:typed_data';
 import 'package:localstorage/localstorage.dart';
 // The dude who made localstorage didn't export it
 // ignore: implementation_imports
-import 'package:localstorage/src/errors.dart';
-import 'package:sudoku_presentation/common.dart';
+// import 'package:localstorage/src/errors.dart';
+// import 'package:sudoku_presentation/common.dart';
 import 'package:sudoku_presentation/repositories.dart';
 import 'package:sudoku_presentation/sudoku_bloc.dart';
+import 'package:sudoku_presentation/errors.dart';
+import 'package:sudoku_presentation/sudoku_configuration.dart';
 import 'package:sudoku_core/sudoku_core.dart';
 
 List<List<T>> dynamicTo2dList<T>(dynamic _list) {
@@ -32,7 +34,7 @@ class LocalStorageBoardRepository extends BoardRepository {
       "O armazenamento ainda não foi preparado, usa-lo agora é um erro");
 
   Map<String, LocalStorage> openedStorages = {};
-  Map<String, FreedStorageCallback> busyStorages = {};
+  Map<String, FreedStorageCallback?> busyStorages = {};
 
   FutureOr<StorageStatus> prepareAndGetStatus() async {
     if (status.type != StorageStatusType.unawaited) {
@@ -51,10 +53,11 @@ class LocalStorageBoardRepository extends BoardRepository {
       this.status = status;
       return status;
       // ignore: avoid_catching_errors
-    } on PlatformNotSupportedError {
-      return const StorageStatus(StorageStatusType.unsupported,
-          "Essa plataforma não é suportada para o armazenamento persistente do Sudoku");
-    } catch (e) {
+    } //on PlatformNotSupportedError {
+    //   return const StorageStatus(StorageStatusType.unsupported,
+    //       "Essa plataforma não é suportada para o armazenamento persistente do Sudoku");
+    // }
+    catch (e) {
       return StorageStatus(StorageStatusType.error,
           "O armazenamento não pode ser preparado: $e");
     }
@@ -86,20 +89,20 @@ class LocalStorageBoardRepository extends BoardRepository {
       throw Error();
     }
     final file = await getStorage(side, difficulty);
-    final initialStateRaw = dynamicTo2dList<int>(file.getItem("initialState"));
+    final initialStateRaw = dynamicTo2dList<int>(file?.getItem("initialState"));
     final initialState = BidimensionalList<int>.view2d(initialStateRaw);
-    final stateRaw = dynamicTo2dList<int>(file.getItem("state"));
+    final stateRaw = dynamicTo2dList<int>(file?.getItem("state"));
     final state = BidimensionalList<int>.view2d(stateRaw);
     final possibleValuesRaw =
-        dynamicTo3dList<int>(file.getItem("possibleValues"));
+        dynamicTo3dList<int>(file?.getItem("possibleValues"));
     final possibleValues =
         BidimensionalList<List<int>>.view2d(possibleValuesRaw);
-    final _side = file.getItem("side") as int;
+    final _side = file?.getItem("side") as int;
     final sudokuState = SudokuState.raw(
         initialState: initialState,
         state: state,
         possibleValues: possibleValues,
-        solution: null, // Will be computed when needed
+        solution: BidimensionalList<int>.empty(), // Will be computed when needed
         side: _side);
     await null;
     return sudokuState;
@@ -111,7 +114,7 @@ class LocalStorageBoardRepository extends BoardRepository {
     return filename;
   }
 
-  Future<LocalStorage> getStorage(int side, SudokuDifficulty difficulty) async {
+  Future<LocalStorage?> getStorage(int side, SudokuDifficulty difficulty) async {
     if (!await hasConfiguration(side, difficulty)) {
       final difficultyIndex = SudokuDifficulty.values.indexOf(difficulty);
       final configs =
@@ -127,7 +130,7 @@ class LocalStorageBoardRepository extends BoardRepository {
       await file.ready;
       openedStorages[filename] = file;
     }
-    return openedStorages[filename];
+    return openedStorages![filename];
   }
 
   Future<LocalStorage> save(LocalStorage file, SudokuSnapshot snap) async {
@@ -170,7 +173,7 @@ class LocalStorageBoardRepository extends BoardRepository {
     }
     busyStorages[filename] = null;
     final file = await getStorage(side, difficulty);
-    await save(file, snap);
+    await save(file!, snap);
     busyStorages[filename]?.call(file);
     busyStorages.remove(filename);
   }

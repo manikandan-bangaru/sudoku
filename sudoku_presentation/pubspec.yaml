@@ -4,7 +4,7 @@ description: A library with the BLoCs and Repositories for the Sudoku Flutter ap
 homepage: https://www.github.com/kalildev/sudoku
 
 environment:
-  sdk: '>=2.9.0-5.0 <2.9.0'
+  sdk: ">=2.12.0 <=3.7.0"
 
 dependencies:
   sudoku_core:
@@ -12,5 +12,5 @@ dependencies:
   bloc: any
 
 dev_dependencies:
-  extra_pedantic: 1.2.0
+  extra_pedantic: any
   test: ^1.6.0
