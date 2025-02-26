@@ -31,7 +31,7 @@ class DailyChallengesScreen extends StatelessWidget {
                     CalendarWidget(provider: provider),
                     PlayButton(onPressed: provider.play),
                     const SizedBox(height: 20),
-                    BannerAdWidget(),
+                    if (shouldShowAdForThisUser) BannerAdWidget(),
                   ],
                 ),
                 // Image.asset('assets/images/inProgress.png'),

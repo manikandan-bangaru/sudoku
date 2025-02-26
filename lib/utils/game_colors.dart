@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class GameColors {
+  static final selectedColor = Color(0xff1a73e8);
+
   static const _primary = Color(0xFF325BAD);
 
   static const _appBarBackground = Colors.white;

@@ -19,6 +19,26 @@ class StorageService {
     return storageService;
   }
 
+  Future<void> saveDifficulty(Difficulty diff) async {
+    await _prefs.setString('game_difficulty', diff.name);
+  }
+  Future<Difficulty> getDifficulty() async {
+    String? diff = _prefs.getString('game_difficulty');
+    Difficulty result = Difficulty.Easy;
+    if (diff == Difficulty.Easy.name) {
+      result = Difficulty.Easy;
+    } else if (diff == Difficulty.Medium.name) {
+      result = Difficulty.Medium;
+    } else if (diff == Difficulty.Hard.name) {
+      result = Difficulty.Hard;
+    } else if (diff == Difficulty.Expert.name) {
+      result = Difficulty.Expert;
+    } else if (diff == Difficulty.Grandmaster.name) {
+      result = Difficulty.Grandmaster;
+    }
+    return result;
+  }
+
   Future<void> saveGame(GameModel gameModel) async {
     await _prefs.setString('game', jsonEncode(gameModel.toJson()));
   }

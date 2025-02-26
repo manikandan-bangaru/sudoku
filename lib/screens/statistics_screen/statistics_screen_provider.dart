@@ -191,15 +191,6 @@ class StatisticsScreenProvider with ChangeNotifier {
       title: GameStrings.winsWithNoMistakes,
       type: StatisticType.Games,
     ));
-    //MARK:  Adding Ads here
-    //TODO: This is Native Ad Cell
-    stats.add(StatModel(
-      index: 4,
-      value: 0,
-      title: '',
-      type: StatisticType.Games,
-      isAdCell: true,
-    ));
     stats.add(StatModel(
       index: 0,
       value: bestTime != null ? bestTime.toTimeString() : '-',
@@ -236,7 +227,15 @@ class StatisticsScreenProvider with ChangeNotifier {
       title: GameStrings.bestWinStreak,
       type: StatisticType.Streaks,
     ));
-
+    //MARK:  Adding Ads here
+    //TODO: This is Native Ad Cell
+    stats.add(StatModel(
+      index: 2,
+      value: 0,
+      title: '',
+      type: StatisticType.Streaks,
+      isAdCell: true,
+    ));
     return stats;
   }
 

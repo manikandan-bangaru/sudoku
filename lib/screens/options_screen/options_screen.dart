@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:sudoku/admob/BannerAdWidget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../admob/adMobIntegration.dart';
 import '../../mixins/app_review_mixin.dart';
 import '../../mixins/share_mixin.dart';
 import '../../services/localization_manager.dart';
@@ -186,7 +187,7 @@ class _OptionsScreenState extends State<OptionsScreen>
                   SizedBox(height: 10,),
                   AboutGameWidget(),
                   SizedBox(height: 10,),
-                  BannerAdWidget(),
+                  if (shouldShowAdForThisUser) BannerAdWidget(),
                 ],
               ),
             ),

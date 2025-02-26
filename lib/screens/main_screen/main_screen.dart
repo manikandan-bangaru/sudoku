@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku/admob/adMobIntegration.dart';
+import 'package:sudoku/constant/enums.dart';
 
 import '../../admob/BannerAdWidget.dart';
+import '../../mixins/app_review_mixin.dart';
+import '../../mixins/share_mixin.dart';
 import '../../models/game_model.dart';
 import '../../utils/game_colors.dart';
 import '../../utils/game_routes.dart';
@@ -13,11 +16,25 @@ import '../../utils/game_text_styles.dart';
 import '../../widgets/app_bar_action_button.dart';
 import '../../widgets/button/rounded_button/rounded_button.dart';
 import 'main_screen_provider.dart';
-
-class MainScreen extends StatelessWidget {
-  const MainScreen({this.savedGame, super.key});
-
+import 'package:flutter/material.dart';
+class MainScreen extends StatefulWidget {
+  // final bool hideDoneButton ;
   final GameModel? savedGame;
+  const MainScreen({this.savedGame});
+
+  @override
+  State<MainScreen> createState() => _MainScreen();
+}
+
+class _MainScreen extends State<MainScreen>
+    with ShareMixin, AppReviewMixin {
+//
+// class MainScreen extends StateullWidget {
+  GameModel? savedGame;
+  MainScreen(GameModel? savedGame) {
+    this.savedGame = savedGame;
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -29,15 +46,15 @@ class MainScreen extends StatelessWidget {
         backgroundColor: GameColors.mainScreenBg,
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         leading: const SizedBox.shrink(),
-        actions: [
-          AppBarActionButton(
-            onPressed: () =>
-                GameRoutes.goTo(GameRoutes.optionsScreen, enableBack: true),
-            icon: Icons.settings_outlined,
-            iconSize: GameSizes.getWidth(0.08),
-          ),
-          SizedBox(width: GameSizes.getWidth(0.02)),
-        ],
+        // actions: [
+        //   AppBarActionButton(
+        //     onPressed: () =>
+        //         GameRoutes.goTo(GameRoutes.optionsScreen, enableBack: true),
+        //     icon: Icons.settings_outlined,
+        //     iconSize: GameSizes.getWidth(0.08),
+        //   ),
+        //   SizedBox(width: GameSizes.getWidth(0.02)),
+        // ],
       ),
       body: ChangeNotifierProvider<MainScreenProvider>(
         create: (context) => MainScreenProvider(savedGame: savedGame),
@@ -52,6 +69,50 @@ class MainScreen extends StatelessWidget {
                 // const ChallengeAndEvents(),
                 const AppLogo(),
                 GameTitle(title: "appName".tr(args: [":\n"])),
+          SegmentedButton<Difficulty>(
+          style: SegmentedButton.styleFrom(
+          backgroundColor: GameColors.optionsBackground,
+          foregroundColor: Colors.black,
+          selectedForegroundColor: Colors.white,
+          selectedBackgroundColor: GameColors.selectedColor,
+          ),
+          segments: const <ButtonSegment<Difficulty>>[
+          ButtonSegment<Difficulty>(
+          value: Difficulty.Easy,
+          label: Text("Easy", style: TextStyle(fontSize: 14)),
+          icon: null,
+
+          // icon: Icon(Icons.one_k_rounded),
+          ),
+          ButtonSegment<Difficulty>(
+          value: Difficulty.Medium,
+          label: Text('Medium',style: TextStyle(fontSize: 12),),
+          // icon: Icon(Icons.two_k_rounded),
+          ),
+          ButtonSegment<Difficulty>(
+          value: Difficulty.Hard,
+          label: Text('Hard',style: TextStyle(fontSize: 14)),
+          // icon: Icon(Icons.three_k_rounded),
+          ),
+          ButtonSegment<Difficulty>(
+          value: Difficulty.Expert,
+          label: Text('Expert',style: TextStyle(fontSize: 14)),
+          // icon: Icon(Icons.four_k_rounded),
+          ),
+          ButtonSegment<Difficulty>(
+          value: Difficulty.Grandmaster,
+          label: Text('Master',style: TextStyle(fontSize: 14)),
+          // icon: Icon(Icons.five_k_rounded),
+          ),
+          ],
+          selected: <Difficulty>{provider.selectedDificulty},
+          onSelectionChanged: (Set<Difficulty> newSelection) async {
+          setState(()  {
+            provider.selectedDificulty = newSelection.first;
+          });
+          await provider.storageService.saveDifficulty(newSelection.first);
+          },
+          ),
                 Container(
                   height: GameSizes.getHeight(0.25),
                   padding: GameSizes.getHorizontalPadding(0.05),
@@ -74,11 +135,11 @@ class MainScreen extends StatelessWidget {
                         buttonText: "newGame".tr(),
                         whiteButton: provider.isThereASavedGame,
                         elevation: provider.isThereASavedGame ? 5 : 0,
-                        onPressed: provider.newGame,
+                        onPressed: ()=> provider.newGame(provider.selectedDificulty),
                         textSize: GameSizes.getHeight(0.022),
                       ),
                       Spacer(flex: 1,),
-                      BannerAdWidget(),
+                      if (shouldShowAdForThisUser) BannerAdWidget(),
                     ],
                   ),
                 ),

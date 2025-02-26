@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:sudoku/admob/adMobIntegration.dart';
 
 import '../constant/enums.dart';
 import '../constant/useful_tips.dart';
@@ -11,8 +12,48 @@ import 'popup/popup_game_stats.dart';
 import 'popup/useful_tip_widget.dart';
 
 class Popup {
+  static Future<void> getMoreHints(
+      {required Function(bool) onAdRewardCallBack,}) {
+    Widget content = Padding(
+      padding: GameSizes.getSymmetricPadding(0.05, 0.02)
+          .copyWith(bottom: GameSizes.getHeight(0.02)),
+      child: Text(
+        "You have exhausted all of your Hint's. Wound you like to watch Ad for 3 Extra hints? ",
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: GameColors.popupContentText,
+          fontSize: GameSizes.getWidth(0.04),
+        ),
+      ),
+    );
+
+    List<Widget> actions = [
+      RoundedButton(
+          buttonText: "Watch an Ad",
+          onPressed: () {
+          AdMobMobileHelper.sharedInstance.showRewardAd( isSuccess: (bool isSuccess) {
+            Navigator.pop(dialogContext);
+            onAdRewardCallBack(isSuccess);
+          });
+          }),
+      RoundedButton(
+          whiteButton: true,
+          buttonText: "Dismiss",
+          // icon: Icons.exit_to_app,
+          onPressed: () {
+            onAdRewardCallBack(false);
+            Navigator.pop(dialogContext);
+            // Navigator.pop(GameRoutes.navigatorKey.currentContext!);
+          }),
+    ];
+     return _showDialog(
+      title: "Get More Hints",
+      content: content,
+      actions: actions,
+    );
+  }
   static Future<void> gameOver(
-      {required Function() onNewGame, required Function() onExit}) {
+      {required Function(bool) onAdRewardCallBack, required Function() onNewGame, required Function() onExit}) {
     Widget content = Padding(
       padding: GameSizes.getSymmetricPadding(0.05, 0.02)
           .copyWith(bottom: GameSizes.getHeight(0.02)),
@@ -34,6 +75,14 @@ class Popup {
           onPressed: () {
             onExit();
             Navigator.pop(GameRoutes.navigatorKey.currentContext!);
+          }),
+      RoundedButton(
+          buttonText: "To Resume watch an Ad",
+          onPressed: () {
+            AdMobMobileHelper.sharedInstance.showRewardAd( isSuccess: (bool isSuccess) {
+              Navigator.pop(dialogContext);
+              onAdRewardCallBack(isSuccess);
+            });
           }),
       RoundedButton(
           buttonText: "newGame".tr(),
@@ -81,7 +130,7 @@ class Popup {
       actions: actions,
     );
   }
-
+  static late  BuildContext dialogContext;
   static Future<void> _showDialog({
     required String title,
     required Widget content,
@@ -93,6 +142,7 @@ class Popup {
       barrierDismissible: barrierDismissible,
 
       builder: (BuildContext context) {
+        dialogContext = context;
         return PopScope(
           canPop: false,
           child: Dialog(

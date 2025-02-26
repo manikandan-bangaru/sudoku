@@ -30,7 +30,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Sudoku',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(useMaterial3: true),
+      theme: ThemeData(useMaterial3: true,
+        segmentedButtonTheme: const SegmentedButtonThemeData(
+          selectedIcon: SizedBox.shrink(), // Hide tick mark
+        ),),
       navigatorKey: GameRoutes.navigatorKey,
       onGenerateRoute: GameRoutes.generateRoute,
       initialRoute: GameRoutes.navigationBar,

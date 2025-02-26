@@ -3,17 +3,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sudoku/admob/BannerAdWidget.dart';
+import 'package:sudoku/admob/adMobIntegration.dart';
 
 import '../../constant/enums.dart';
 import '../../constant/game_constants.dart';
 import '../../models/stat_group_model.dart';
 import '../../models/stat_model.dart';
 import '../../utils/game_colors.dart';
+import '../../utils/game_routes.dart';
 import '../../utils/game_sizes.dart';
 import '../../utils/game_strings.dart';
 import '../../utils/game_text_styles.dart';
 import '../../widgets/app_bar_action_button.dart';
+import '../../widgets/option_widgets/option_group_widget.dart';
+import '../../widgets/option_widgets/option_widget.dart';
 import 'statistics_screen_provider.dart';
+import 'package:flutter/widgets.dart';
 
 class StatisticsScreen extends StatelessWidget {
   const StatisticsScreen({super.key});
@@ -96,9 +101,9 @@ class StatisticsGroup extends StatelessWidget {
 
   final String groupTitle;
   final List<StatModel> statistics;
-
   @override
   Widget build(BuildContext context) {
+
     return Padding(
       padding: GameSizes.getVerticalPadding(0.015),
       child: Column(
@@ -111,14 +116,23 @@ class StatisticsGroup extends StatelessWidget {
             ),
           ),
           SizedBox(height: GameSizes.getHeight(0.005)),
-          Column(
-            children: List.generate(
-              statistics.length,
-              (index) {
-                return StatisticCard(statModel: statistics[index]);
-              },
-            ),
-          )
+        OptionGroup(
+              options:
+                List.generate(
+                  statistics.length,
+                      (index) {
+                    return StatisticCard(statModel: statistics[index], index: index,);
+                  },
+                ),
+              ),
+          // Column(
+          //   children: List.generate(
+          //     statistics.length,
+          //     (index) {
+          //       return StatisticCard(statModel: statistics[index]);
+          //     },
+          //   ),
+          // )
         ],
       ),
     );
@@ -126,16 +140,102 @@ class StatisticsGroup extends StatelessWidget {
 }
 
 class StatisticCard extends StatelessWidget {
-  const StatisticCard({required this.statModel, super.key});
+  StatisticCard({required this.statModel, required this.index, super.key});
 
   final StatModel statModel;
+  final int index;
+  List<Color> colors = [Colors.red, Colors.green, Colors.blue, Colors.orange, Colors.purple, Colors.pink, Colors.indigo];
+  static int _currentIndex = 0;
+  Color getColor() {
+    Color color ;
+    if (_currentIndex < colors.length) {
+      color =  colors[_currentIndex];
+      _currentIndex = _currentIndex + 1;
+    } else {
+      _currentIndex = 0;
+      color = colors[0];
+    }
+    return  color;
+  }
+  Widget _GameStatsWidget() {
+    return  InkWell(
+      onTap:   null ,
+      borderRadius: GameSizes.getRadius(6),
+      child: Padding(
+        padding: GameSizes.getVerticalPadding(0.005),
+        child: Row(
+          children: [
+            SizedBox(width: GameSizes.getWidth(0.01)),
+            Container(
+              width: GameSizes.getWidth(0.07),
+              height: GameSizes.getWidth(0.07),
+              padding: GameSizes.getPadding(0.01),
+              decoration: BoxDecoration(
+                color:  getColor(),
+                borderRadius: GameSizes.getRadius(6),
+              ),
+              child: Center(
+                child: FittedBox(
+                  child: Icon(
+                    getIconData(statModel.title),
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(width: GameSizes.getWidth(0.04)),
+            Text(statModel.title,
+                style: GameTextStyles.optionButtonTitle
+                    .copyWith(fontSize: GameSizes.getWidth(0.04))),
+            const Spacer(),
+              Text(
+                  statModel.value == null ? '-' : statModel.value.toString(),
+                  style: GameTextStyles.statisticsCardValue
+                      .copyWith(fontSize: GameSizes.getHeight(0.025)),
+                ),
+            // Icon(
+            //   Icons.keyboard_arrow_right,
+            //   color: GameColors.greyColor,
+            //   size: GameSizes.getWidth(0.07),
+            // ),
+          ],
+        ),
+      ),
+    );
 
-  @override
-  Widget build(BuildContext context) {
-    return (statModel.isAdCell == true) ? Container(
-      child: BannerAdWidget(height: 50,),
-      height: 50,
-    ): Container(
+    //   OptionWidget(
+    //   title: statModel.title,
+    //   iconColor: GameColors.roundedButton,
+    //   iconData:  getIconData(statModel.title),
+    //   onTap: null,
+    //   loading: false,
+    // );
+    //   Card(
+    //     elevation: 4, // Shadow effect
+    //     shape: RoundedRectangleBorder(
+    //     borderRadius: BorderRadius.circular(10), // Rounded corners
+    // ),
+    // child: Padding(
+    // padding: EdgeInsets.all(16),
+    // child: Row(
+    //       children: [
+    //         Icon(getIconData(statModel.title), color: GameColors.roundedButton),
+    //         SizedBox(width: 10),
+    //         Text(statModel.title),
+    //         Spacer(),
+    //         Text(
+    //           statModel.value == null ? '-' : statModel.value.toString(),
+    //           style: GameTextStyles.statisticsCardValue
+    //               .copyWith(fontSize: GameSizes.getHeight(0.025)),
+    //         ),
+    //       ],
+    //     ),
+    //     // ✅ Show trailing widget if available
+    // ),);
+
+  }
+  Widget _OldGameStatsWidget() {
+    return Container(
       width: double.infinity,
       margin: GameSizes.getVerticalPadding(0.007),
       padding: GameSizes.getPadding(0.045),
@@ -177,6 +277,14 @@ class StatisticCard extends StatelessWidget {
         ],
       ),
     );
+  }
+  @override
+  Widget build(BuildContext context) {
+    return (statModel.isAdCell == true) ? (shouldShowAdForThisUser == false) ? Container() : Container(
+      child: BannerAdWidget(height: 50,),
+      height: 50,
+    ): _GameStatsWidget();
+
   }
 
   IconData getIconData(String title) {
@@ -244,7 +352,7 @@ class ComparisonBox extends StatelessWidget {
 }
 
 class StatisticsAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const StatisticsAppBar(
+   StatisticsAppBar(
       {required this.onTimeInterval, required this.difficulties, super.key});
 
   final Function() onTimeInterval;
@@ -265,32 +373,108 @@ class StatisticsAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: const SizedBox(),
       actions: [
         AppBarActionButton(
-          icon: Icons.tune,
+          icon: Icons.sort,
           onPressed: onTimeInterval,
           iconSize: GameSizes.getWidth(0.07),
         ),
         SizedBox(width: GameSizes.getWidth(0.025)),
       ],
-      bottom: TabBar(
-          tabAlignment: TabAlignment.start,
-          labelColor: GameColors.roundedButton,
-          unselectedLabelColor: GameColors.greyColor,
-          labelStyle: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: GameSizes.getWidth(0.04),
-          ),
-          indicatorColor: Colors.transparent,
-          isScrollable: true,
-          tabs: List.generate(
-              GameSettings.getDifficulties.length,
-              (index) => Tab(
+      bottom:
+          PreferredSize(preferredSize: preferredSize, child:  Container(
+            height: kToolbarHeight - 8.0,
+            decoration: BoxDecoration(
+              color: GameColors.optionsBackground,
+              borderRadius: BorderRadius.circular(.0),
+            ),
+            child: TabBar(
+              // controller: _tabController,
+              indicator: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.0),
+                  color: _selectedColor),
+              labelColor: Colors.white,
+              unselectedLabelColor: Colors.black,isScrollable: true,
+                tabAlignment: TabAlignment.start,
+              tabs:  List.generate(
+                  GameSettings.getDifficulties.length,
+                      (index) => Tab(
                       child: Text(
-                    GameSettings.getDifficulties[index].name.toLowerCase().tr(),
-                    textAlign: TextAlign.left,
-                  )))),
+                        "  " +GameSettings.getDifficulties[index].name.toLowerCase().tr() + "  ",
+                        textAlign: TextAlign.left,
+                      ))),
+            ),
+          ),
+          )
+
+      // TabBar(
+      //     tabAlignment: TabAlignment.start,
+      //     labelColor: _selectedColor, //GameColors.roundedButton,
+      //     unselectedLabelColor: _unselectedColor,// GameColors.greyColor,
+      //     labelStyle: TextStyle(
+      //       fontWeight: FontWeight.bold,
+      //       fontSize: GameSizes.getWidth(0.04),
+      //     ),
+      //     indicator: MaterialDesignIndicator(
+      //         indicatorHeight: 4, indicatorColor: _selectedColor),
+      //
+      //     isScrollable: true,
+      //     tabs: List.generate(
+      //         GameSettings.getDifficulties.length,
+      //         (index) => Tab(
+      //                 child: Text(
+      //               GameSettings.getDifficulties[index].name.toLowerCase().tr(),
+      //               textAlign: TextAlign.left,
+      //             )))),
     );
   }
 
   @override
   Size get preferredSize => Size.fromHeight(GameSizes.getWidth(0.25));
+  final _selectedColor = Color(0xff1a73e8);
+  final _unselectedColor = Color(0xff5f6368);
+}
+
+class MaterialDesignIndicator extends Decoration {
+  final double indicatorHeight;
+  final Color indicatorColor;
+
+  const MaterialDesignIndicator({
+    required this.indicatorHeight,
+    required this.indicatorColor,
+  });
+
+  @override
+  _MaterialDesignPainter createBoxPainter([VoidCallback? onChanged]) {
+    return _MaterialDesignPainter(this, onChanged);
+  }
+}
+
+class _MaterialDesignPainter extends BoxPainter {
+  final MaterialDesignIndicator decoration;
+
+  _MaterialDesignPainter(this.decoration, VoidCallback? onChanged)
+      : super(onChanged);
+
+  @override
+  void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
+    assert(configuration.size != null);
+
+    final Rect rect = Offset(
+      offset.dx,
+      configuration.size!.height - decoration.indicatorHeight,
+    ) &
+    Size(configuration.size!.width, decoration.indicatorHeight);
+
+    final Paint paint = Paint()
+      ..color = decoration.indicatorColor
+      ..style = PaintingStyle.fill;
+
+    canvas.drawRRect(
+      RRect.fromRectAndCorners(
+        rect,
+        topRight: Radius.circular(8),
+        topLeft: Radius.circular(8),
+      ),
+      paint,
+    );
+  }
 }

@@ -9,16 +9,24 @@ import '/widgets/modal_bottom_sheet/modal_bottom_sheets.dart';
 
 class MainScreenProvider with ChangeNotifier {
   GameModel? savedGame;
-
+  Difficulty selectedDificulty = Difficulty.Easy;
   MainScreenProvider({this.savedGame}) {
     _init();
   }
-
+  late StorageService storageService;
   Future<void> _init() async {
-    StorageService storageService = await StorageService.initialize();
-
+    storageService = await StorageService.initialize();
+    selectedDificulty = await this.getDiffiCulty();
     savedGame = storageService.getSavedGame();
     notifyListeners();
+  }
+  Future<void> saveDiffiCulty(Difficulty diff) async {
+    this.selectedDificulty = diff;
+    await storageService.saveDifficulty(diff);
+  }
+  Future<Difficulty> getDiffiCulty() async {
+
+   return await storageService.getDifficulty();
   }
 
   bool get isThereASavedGame => savedGame != null;
@@ -27,17 +35,17 @@ class MainScreenProvider with ChangeNotifier {
       ? '${savedGame!.time.toTimeString()} - ${savedGame!.difficulty.name}'
       : '';
 
-  Future<void> newGame() async {
-    Difficulty? newGameDifficulty = await ModalBottomSheets.chooseDifficulty();
+  Future<void> newGame(Difficulty diff) async {
+    // Difficulty? newGameDifficulty = await ModalBottomSheets.chooseDifficulty();
 
-    if (newGameDifficulty != null) {
+    // if (diff != null) {
       final GameModel gameModel = GameModel(
         sudokuBoard: GameSettings.createSudokuBoard(),
-        difficulty: newGameDifficulty,
+        difficulty: diff,
       );
 
       GameRoutes.goTo(GameRoutes.gameScreen, args: gameModel);
-    }
+    // }
   }
 
   void continueGame() {

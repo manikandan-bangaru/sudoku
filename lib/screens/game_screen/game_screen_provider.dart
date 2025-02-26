@@ -66,13 +66,13 @@ class GameScreenProvider with ChangeNotifier {
       GameRoutes.goTo(GameRoutes.navigationBar, args: [0, currentGame]);
     }
   }
-
+// Top Settings button is pressed
   Future<void> onSettingsPressed() async {
     _pauseGame();
     notifyListeners();
 
     await GameRoutes.goTo(
-      GameRoutes.optionsScreen,
+      GameRoutes.howToPlayScreen,
       enableBack: true,
       callBackAfter: _resumeGame,
     );
@@ -384,8 +384,15 @@ class GameScreenProvider with ChangeNotifier {
     if (win) {
       GameRoutes.goTo(GameRoutes.winScreen, args: gameModel);
     } else {
-      Popup.gameOver(onNewGame: _chooseNewGameDifficulty, onExit: _onExit);
+      Popup.gameOver(onNewGame: _chooseNewGameDifficulty, onExit: _onExit, onAdRewardCallBack: _onAdRewardCallBack);
     }
+  }
+
+  Future<void> _onAdRewardCallBack(bool isSuccess) async {
+      if (isSuccess) {
+          hints = 3;
+          mistakes = 0;
+      }
   }
 
   Future<void> _chooseNewGameDifficulty() async {
@@ -408,7 +415,7 @@ class GameScreenProvider with ChangeNotifier {
       Future.delayed(
           const Duration(milliseconds: 300),
           () => Popup.gameOver(
-              onNewGame: _chooseNewGameDifficulty, onExit: _onExit));
+              onNewGame: _chooseNewGameDifficulty, onExit: _onExit, onAdRewardCallBack: _onAdRewardCallBack));
     }
   }
 
@@ -504,6 +511,11 @@ class GameScreenProvider with ChangeNotifier {
     if (_canGetHint) {
       _giveHint();
       _saveGame();
+    } else {
+      // TODO: SHow Watch ad alert
+      if (hints <= 0) {
+      Popup.getMoreHints( onAdRewardCallBack: _onAdRewardCallBack);
+      }
     }
   }
 

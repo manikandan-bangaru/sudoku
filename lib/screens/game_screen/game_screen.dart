@@ -38,8 +38,8 @@ class GameScreen extends StatelessWidget {
               const Spacer(),
               NumberButtons(provider: provider),
               const Spacer(),
-              BannerAdWidget(),
-              const Spacer(flex: 1),
+              if (shouldShowAdForThisUser) BannerAdWidget(),
+              // const Spacer(flex: 1),
             ],
           ),
         );
@@ -374,7 +374,7 @@ class GameAppBar extends StatelessWidget implements PreferredSizeWidget {
         //   onPressed: () {},
         // ),
         AppBarActionButton(
-          icon: Icons.settings_outlined,
+          icon: Icons.info_outline,
           onPressed: onSettingsPressed,
         ),
         SizedBox(width: GameSizes.getWidth(0.02)),
