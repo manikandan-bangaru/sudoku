@@ -2,7 +2,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:sudoku/admob/adMobIntegration.dart';
 
+import '../../admob/BannerAdWidget.dart';
 import '../../models/game_model.dart';
 import '../../utils/game_colors.dart';
 import '../../utils/game_routes.dart';
@@ -40,9 +42,11 @@ class MainScreen extends StatelessWidget {
       body: ChangeNotifierProvider<MainScreenProvider>(
         create: (context) => MainScreenProvider(savedGame: savedGame),
         child: Consumer<MainScreenProvider>(builder: (context, provider, _) {
-          return Padding(
-            padding: GameSizes.getSymmetricPadding(0.05, 0.02),
-            child: Column(
+          return
+            // Padding(
+            // padding: GameSizes.getSymmetricPadding(0.05, 0.02),
+            // child:
+          Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // const ChallengeAndEvents(),
@@ -73,11 +77,13 @@ class MainScreen extends StatelessWidget {
                         onPressed: provider.newGame,
                         textSize: GameSizes.getHeight(0.022),
                       ),
+                      Spacer(flex: 1,),
+                      BannerAdWidget(),
                     ],
                   ),
                 ),
               ],
-            ),
+            // ),
           );
         }),
       ),

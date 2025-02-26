@@ -1,7 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sudoku/admob/adMobIntegration.dart';
 
+import '../../admob/BannerAdWidget.dart';
 import '../../constant/enums.dart';
 import '../../models/cell_model.dart';
 import '../../models/game_model.dart';
@@ -35,6 +37,8 @@ class GameScreen extends StatelessWidget {
               ActionButtons(provider: provider),
               const Spacer(),
               NumberButtons(provider: provider),
+              const Spacer(),
+              BannerAdWidget(),
               const Spacer(flex: 1),
             ],
           ),

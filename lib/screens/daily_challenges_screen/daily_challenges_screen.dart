@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sudoku/admob/adMobIntegration.dart';
 
+import '../../admob/BannerAdWidget.dart';
 import '../../constant/constants.dart';
 import '../../utils/game_colors.dart';
 import '../../utils/game_sizes.dart';
@@ -28,7 +30,8 @@ class DailyChallengesScreen extends StatelessWidget {
                     const TopBlueBox(),
                     CalendarWidget(provider: provider),
                     PlayButton(onPressed: provider.play),
-                    const SizedBox(height: 36),
+                    const SizedBox(height: 20),
+                    BannerAdWidget(),
                   ],
                 ),
                 // Image.asset('assets/images/inProgress.png'),
