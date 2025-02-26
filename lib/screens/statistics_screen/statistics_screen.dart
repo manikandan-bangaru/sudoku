@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sudoku/admob/BannerAdWidget.dart';
 
 import '../../constant/enums.dart';
 import '../../constant/game_constants.dart';
@@ -131,7 +132,10 @@ class StatisticCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return (statModel.isAdCell == true) ? Container(
+      child: BannerAdWidget(height: 50,),
+      height: 50,
+    ): Container(
       width: double.infinity,
       margin: GameSizes.getVerticalPadding(0.007),
       padding: GameSizes.getPadding(0.045),

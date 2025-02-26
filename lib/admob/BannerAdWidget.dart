@@ -7,9 +7,11 @@ import 'AdMobConstants.dart';
 import 'adMobIntegration.dart';
 
 class BannerAdWidget extends StatefulWidget{
+  double height = 40.00;
+  BannerAdWidget({double height = 40.00});
   @override
   State<StatefulWidget> createState() {
-    return _BannerAdmobState();
+    return _BannerAdmobState(height: height);
   }
 }
 
@@ -17,7 +19,8 @@ class _BannerAdmobState extends State<BannerAdWidget>{
 
   late BannerAd _bannerAd;
   bool _bannerReady = false;
-
+  double height = 40.00;
+  _BannerAdmobState({required this.height});
   @override
   void initState() {
     super.initState();
@@ -52,9 +55,9 @@ class _BannerAdmobState extends State<BannerAdWidget>{
   Widget build(BuildContext context) {
     return _bannerReady?SizedBox(
       width: _bannerAd.size.width.toDouble(),
-      height: 40,
+      height: height,
       child: AdWidget(ad: _bannerAd),
     ):Container(width: _bannerAd.size.width.toDouble(),
-        height: 40);
+        height: height);
   }
 }
