@@ -13,6 +13,7 @@ class DailyChallengesScreenProvider with ChangeNotifier {
   DailyChallengesScreenProvider() {
     now = DateTime.now();
     selectedDate = DateTime(now.year, now.month, now.day);
+    selectedDay = now.day;
   }
 
   void play() {
