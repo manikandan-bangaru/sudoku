@@ -14,29 +14,30 @@ import '/widgets/modal_bottom_sheet/modal_bottom_sheets.dart';
 
 class StatisticsScreenProvider with ChangeNotifier {
   late StorageService _storageService;
-  late StatisticsModel statisticsModel;
+  late StatisticsModel statisticsModel = StatisticsModel(statistics: [], statGroups: []);
 
   bool loading = true;
 
   TimeInterval timeInterval = TimeInterval.All_time;
 
   StatisticsScreenProvider() {
+    statisticsModel = StatisticsModel(statistics: [], statGroups: []);
     _init();
   }
 
-  List<GameStatsModel> _getStatisticsByTime() {
+  List<GameStatsModel> getStatisticsByTime(TimeInterval this_month) {
     final DateTime now = DateTime.now();
     List<GameStatsModel> gameStats = statisticsModel.statistics;
-
-    if (timeInterval == TimeInterval.All_time) {
+    var currTimeInterval = timeInterval ?? this.timeInterval;
+    if (currTimeInterval == TimeInterval.All_time) {
       return gameStats;
-    } else if (timeInterval == TimeInterval.This_year) {
+    } else if (currTimeInterval == TimeInterval.This_year) {
       if (gameStats.any((element) => element.dateTime.year == now.year)) {
         return gameStats
             .where((element) => element.dateTime.year == now.year)
             .toList();
       }
-    } else if (timeInterval == TimeInterval.This_month) {
+    } else if (currTimeInterval == TimeInterval.This_month) {
       if (gameStats.any((element) =>
           element.dateTime.month == now.month &&
           now.difference(element.dateTime).inDays < 31)) {
@@ -44,7 +45,7 @@ class StatisticsScreenProvider with ChangeNotifier {
             .where((element) => element.dateTime.month == now.month)
             .toList();
       }
-    } else if (timeInterval == TimeInterval.This_week) {
+    } else if (currTimeInterval == TimeInterval.This_week) {
       if (gameStats.any((element) =>
           now.difference(element.dateTime).inDays <= now.weekday)) {
         return gameStats
@@ -52,7 +53,7 @@ class StatisticsScreenProvider with ChangeNotifier {
                 now.difference(element.dateTime).inDays <= now.weekday)
             .toList();
       }
-    } else if (timeInterval == TimeInterval.Today) {
+    } else if (currTimeInterval == TimeInterval.Today) {
       if (gameStats.any((element) =>
           now.day == element.dateTime.day &&
           now.difference(element.dateTime).inDays < 1)) {
@@ -67,7 +68,7 @@ class StatisticsScreenProvider with ChangeNotifier {
 
   void _setStatGroups() {
     statisticsModel.statGroups.clear();
-    final List<GameStatsModel> statisticsByTime = _getStatisticsByTime();
+    final List<GameStatsModel> statisticsByTime = getStatisticsByTime(this.timeInterval);
 
     for (Difficulty difficulty in GameSettings.getDifficulties) {
       List<GameStatsModel> gameStats = [];
@@ -88,6 +89,30 @@ class StatisticsScreenProvider with ChangeNotifier {
 
       statisticsModel.statGroups.add(statGroupModel);
     }
+  }
+  List<int> getChallengeCompletedDaysThisMonth() {
+    List<int> result = [];
+    final List<GameStatsModel> statisticsByThisMonthTime = getStatisticsByTime(TimeInterval.This_month);
+
+    for (var stats in statisticsByThisMonthTime) {
+     if ( stats.won == true) {
+          int day = stats.dateTime.day;
+          result.add(day);
+     }
+    }
+    return result;
+  }
+  List<int> getChallengeOnlyStartedDaysThisMonth() {
+    List<int> result = [];
+    final List<GameStatsModel> statisticsByThisMonthTime = getStatisticsByTime(TimeInterval.This_month);
+
+    for (var stats in statisticsByThisMonthTime) {
+      if ( stats.won == false) {
+        int day = stats.dateTime.day;
+        result.add(day);
+      }
+    }
+    return result;
   }
 
   List<StatModel> _setStats(List<GameStatsModel> gameStats) {

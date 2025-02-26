@@ -10,6 +10,7 @@ import '../../utils/game_strings.dart';
 import '../../utils/game_text_styles.dart';
 import '../../widgets/button/rounded_button/rounded_button.dart';
 import '../../widgets/star_badge_widget.dart';
+import '../statistics_screen/statistics_screen_provider.dart';
 import 'daily_challenges_screen_provider.dart';
 
 class DailyChallengesScreen extends StatelessWidget {
@@ -17,10 +18,12 @@ class DailyChallengesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<DailyChallengesScreenProvider>(
-      create: (context) => DailyChallengesScreenProvider(),
-      child: Consumer<DailyChallengesScreenProvider>(
-        builder: (context, provider, _) {
+    return MultiProvider(providers: [
+      ChangeNotifierProvider(create: (context) => DailyChallengesScreenProvider()),
+      ChangeNotifierProvider(create: (context) => StatisticsScreenProvider())
+    ],
+      child: Consumer2<DailyChallengesScreenProvider,StatisticsScreenProvider>(
+        builder: (context, dailyProvider, statsProvider, _) {
           return Scaffold(
             // backgroundColor: GameColors.dailyChallengesScreenBg,
             body: Stack(
@@ -28,8 +31,8 @@ class DailyChallengesScreen extends StatelessWidget {
                 Column(
                   children: [
                     const TopBlueBox(),
-                    CalendarWidget(provider: provider),
-                    PlayButton(onPressed: provider.play),
+                    CalendarWidget(daily_challenge_provider: dailyProvider,stats_provider: statsProvider,),
+                    PlayButton(onPressed: dailyProvider.play),
                     const SizedBox(height: 20),
                     if (shouldShowAdForThisUser) BannerAdWidget(),
                   ],
@@ -66,12 +69,18 @@ class PlayButton extends StatelessWidget {
 
 class CalendarWidget extends StatelessWidget {
   const CalendarWidget({
-    required this.provider,
+    required this.daily_challenge_provider,
+    required this.stats_provider,
     super.key,
   });
 
-  final DailyChallengesScreenProvider provider;
-
+  final DailyChallengesScreenProvider daily_challenge_provider;
+  final StatisticsScreenProvider stats_provider;
+  int daysInCurrentMonth() {
+    DateTime now = DateTime.now();
+    int days = DateTime(now.year, now.month + 1, 0).day;
+    return days;
+  }
   @override
   Widget build(BuildContext context) {
     final DateTime now = DateTime.now();
@@ -91,10 +100,10 @@ class CalendarWidget extends StatelessWidget {
                   style: GameTextStyles.calendarDateTitle,
                 ),
                 const Spacer(),
-                const StarBadgeWidget(),
+                StarBadgeWidget(),
                 const SizedBox(width: 8),
                 Text(
-                  '1/30',
+                  '${stats_provider.getChallengeCompletedDaysThisMonth().length}/${daysInCurrentMonth()}',
                   style: GameTextStyles.calendarDateTitle,
                 ),
               ],
@@ -133,19 +142,19 @@ class CalendarWidget extends StatelessWidget {
                     final int day = index - firstDayOfMonth + 1;
                     final bool isFuture = day > now.day;
                     final bool isCurrentMonth = index >= firstDayOfMonth;
-                    final bool isCompleted = isCurrentMonth && day == 3;
-                    final bool isStarted = isCurrentMonth && day == 5;
+                    final bool isCompleted = isCurrentMonth && stats_provider.getChallengeCompletedDaysThisMonth().contains(day);
+                    final bool isStarted = isCurrentMonth && stats_provider.getChallengeOnlyStartedDaysThisMonth().contains(day);
                     final bool isSelected =
-                        isCurrentMonth && provider.selectedDay == day;
+                        isCurrentMonth && daily_challenge_provider.selectedDay == day;
 
                     if (isCompleted) {
-                      return const StarBadgeWidget();
+                      return StarBadgeWidget(today: day,);
                     }
 
                     return InkWell(
                       highlightColor: Colors.transparent,
                       splashColor: Colors.transparent,
-                      onTap: () => provider.selectDay(day),
+                      onTap: () => daily_challenge_provider.selectDay(day),
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
@@ -212,7 +221,7 @@ class TopBlueBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 330,
+      height: 300,
       width: double.infinity,
       padding: EdgeInsets.only(top: GameSizes.topPadding + 20),
       decoration: BoxDecoration(color: Colors.blue.shade700),
@@ -223,7 +232,7 @@ class TopBlueBox extends StatelessWidget {
             GameStrings.dailyChallenges,
             style: GameTextStyles.dailyChallengesTitle,
           ),
-          const Icon(Icons.task_alt, size: 200.00,color: Colors.white,),
+          const Icon(Icons.task_alt, size: 180.00,color: Colors.white,),
         ],
       ),
     );

@@ -356,17 +356,17 @@ class GameScreenProvider with ChangeNotifier {
     }
   }
 
-  Future<void> _saveGameStats() async {
-    if (gameModel.dailyChallenge) {
-      return;
-    }
+  Future<void> _saveGameStats(bool won) async {
+    // if (gameModel.dailyChallenge) {
+    //   return;
+    // }
     final DateTime now = DateTime.now();
 
     GameStatsModel gameStatsModel = GameStatsModel(
       dateTime: now,
       startTime: now,
       difficulty: difficulty,
-      won: false,
+      won: won,
       score: score,
       time: time,
       mistakes: mistakes,
@@ -379,7 +379,7 @@ class GameScreenProvider with ChangeNotifier {
     gameOver = true;
     notifyListeners();
 
-    await _saveGameStats();
+    await _saveGameStats(win);
     await storageService.deleteGame();
     if (win) {
       GameRoutes.goTo(GameRoutes.winScreen, args: gameModel);
