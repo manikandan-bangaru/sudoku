@@ -90,8 +90,9 @@ class StatisticsScreenProvider with ChangeNotifier {
       statisticsModel.statGroups.add(statGroupModel);
     }
   }
-  List<int> getChallengeCompletedDaysThisMonth() {
-    List<int> result = [];
+  Set<int> getChallengeCompletedDaysThisMonth() {
+    _getAllStatistics;
+    Set<int> result = Set<int>();
     final List<GameStatsModel> statisticsByThisMonthTime = getStatisticsByTime(TimeInterval.This_month);
 
     for (var stats in statisticsByThisMonthTime) {
@@ -100,18 +101,23 @@ class StatisticsScreenProvider with ChangeNotifier {
           result.add(day);
      }
     }
+    result.length > 0 ? debugPrint("DEBUG completed: $result"):debugPrint("$result");
     return result;
   }
-  List<int> getChallengeOnlyStartedDaysThisMonth() {
-    List<int> result = [];
+  Set<int> getChallengeOnlyStartedDaysThisMonth() {
+    _getAllStatistics;
+    Set<int> result = Set<int>();
     final List<GameStatsModel> statisticsByThisMonthTime = getStatisticsByTime(TimeInterval.This_month);
-
+    final completedDays = getChallengeCompletedDaysThisMonth();
     for (var stats in statisticsByThisMonthTime) {
       if ( stats.won == false) {
         int day = stats.dateTime.day;
-        result.add(day);
+        if (completedDays.contains(day) == false) {
+          result.add(day);
+        }
       }
     }
+    result.length > 0 ? debugPrint("DEBUG Not completed: $result"):debugPrint("$result");
     return result;
   }
 
