@@ -50,8 +50,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
           },
         ),
       )
-      ..loadRequest(Uri.parse(
-          'https://www.freeprivacypolicy.com/live/2c1fd13f-4643-472f-8c12-2ad368d88a4f'));
+      ..loadRequest(Uri.parse("https://magiban.in/policy.html"));
   }
 
   @override

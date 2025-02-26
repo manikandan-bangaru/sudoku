@@ -143,7 +143,7 @@ class GameTextStyles {
   );
 
   static const _dailyChallengesTitle = TextStyle(
-    fontSize: 16,
+    fontSize: 25,
     color: Colors.white,
     fontWeight: FontWeight.w500,
   );

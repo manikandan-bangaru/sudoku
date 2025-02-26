@@ -86,10 +86,11 @@
     "moreApps": "More Apps",
     "rateUs": "Rate Us",
     "share": "Share",
-    "shareText": "Check out this awesome Sudoku game! {}",
+    "shareText": "\uD83E\uDDE0 Love brain games? Try this Sudoku Puzzle Game!  \nPlay, challenge yourself, and master the grid!  \n\n\uD83D\uDCF2 Get it now: {}",
 
     "gameOver": "Game Over",
     "gameOverText": "You have made 3 mistakes and lost this game",
     "exit": "Exit"
 
 }
+

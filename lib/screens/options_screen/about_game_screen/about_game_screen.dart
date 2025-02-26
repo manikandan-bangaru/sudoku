@@ -88,27 +88,14 @@ class AboutGameScreen extends StatelessWidget {
                         ),
                         SizedBox(height: GameSizes.getWidth(0.025)),
                         Text(
-                          'version'.tr(args: ['1.0.3']),
+                          'version'.tr(args: ['1.0.0']),
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: GameSizes.getWidth(0.038),
                           ),
                         ),
                         SizedBox(height: GameSizes.getWidth(0.052)),
-                        Text(
-                          '© 2023 Recep Oğuzhan Şenoğlu',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontSize: GameSizes.getWidth(0.035),
-                          ),
-                        ),
-                        Text(
-                          'İstanbul / Türkiye',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontSize: GameSizes.getWidth(0.035),
-                          ),
-                        ),
+
                       ],
                     ),
                   ],
@@ -124,13 +111,13 @@ class AboutGameScreen extends StatelessWidget {
                     onTap: () => GameRoutes.goTo(GameRoutes.privacyPolicyScreen,
                         enableBack: true),
                   ),
-                  OptionWidget(
-                    title: "termsOfUse".tr(),
-                    iconColor: Colors.orange,
-                    iconData: Icons.rule,
-                    onTap: () => GameRoutes.goTo(GameRoutes.termsOfUseScreen,
-                        enableBack: true),
-                  ),
+                  // OptionWidget(
+                  //   title: "termsOfUse".tr(),
+                  //   iconColor: Colors.orange,
+                  //   iconData: Icons.rule,
+                  //   onTap: () => GameRoutes.goTo(GameRoutes.termsOfUseScreen,
+                  //       enableBack: true),
+                  // ),
                 ],
               ),
               OptionGroup(
@@ -139,13 +126,13 @@ class AboutGameScreen extends StatelessWidget {
                     title: "moreApps".tr(),
                     iconColor: Colors.green,
                     iconData: Icons.apps,
-                    onTap: () => launchPage('https://play.google.com/store/apps/dev?id=7235038440743748997'),
+                    onTap: () => launchPage('https://magiban.in/index.html'),
                   ),
                   OptionWidget(
                     title: "developerWebsite".tr(),
                     iconColor: Colors.blue,
                     iconData: Icons.web_asset,
-                    onTap: () => launchPage('https://recepsenoglu.com/'),
+                    onTap: () => launchPage('https://magiban.in/'),
                   ),
                 ],
               ),

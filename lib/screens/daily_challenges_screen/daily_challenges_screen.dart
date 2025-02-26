@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../constant/constants.dart';
 import '../../utils/game_colors.dart';
 import '../../utils/game_sizes.dart';
+import '../../utils/game_strings.dart';
 import '../../utils/game_text_styles.dart';
 import '../../widgets/button/rounded_button/rounded_button.dart';
 import '../../widgets/star_badge_widget.dart';
@@ -19,7 +20,7 @@ class DailyChallengesScreen extends StatelessWidget {
       child: Consumer<DailyChallengesScreenProvider>(
         builder: (context, provider, _) {
           return Scaffold(
-            backgroundColor: GameColors.dailyChallengesScreenBg,
+            // backgroundColor: GameColors.dailyChallengesScreenBg,
             body: Stack(
               children: [
                 Column(
@@ -30,7 +31,7 @@ class DailyChallengesScreen extends StatelessWidget {
                     const SizedBox(height: 36),
                   ],
                 ),
-                Image.asset('assets/images/inProgress.png'),
+                // Image.asset('assets/images/inProgress.png'),
               ],
             ),
           );
@@ -53,7 +54,7 @@ class PlayButton extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: RoundedButton(
-        buttonText: "GameStrings.play",
+        buttonText: GameStrings.play,
         onPressed: onPressed,
       ),
     );
@@ -216,9 +217,10 @@ class TopBlueBox extends StatelessWidget {
         children: [
           const SizedBox(height: 18),
           Text(
-            "GameStrings.dailyChallenges",
+            GameStrings.dailyChallenges,
             style: GameTextStyles.dailyChallengesTitle,
           ),
+          const Icon(Icons.task_alt, size: 200.00,color: Colors.white,),
         ],
       ),
     );

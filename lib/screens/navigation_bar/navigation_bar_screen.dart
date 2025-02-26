@@ -1,5 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import '../daily_challenges_screen/daily_challenges_screen.dart';
+import '../options_screen/settings_screen/settings_screen.dart';
 import '/utils/game_sizes.dart';
 
 import '../../models/game_model.dart';
@@ -36,7 +38,9 @@ class _NavigationBarScreenState extends State<NavigationBarScreen> {
 
     List<Widget> screens = [
       MainScreen(savedGame: widget.savedGame),
+      const DailyChallengesScreen(),
       const StatisticsScreen(),
+      // const SettingsScreen()
     ];
     return Scaffold(
       backgroundColor: GameColors.background,
@@ -64,9 +68,18 @@ class _NavigationBarScreenState extends State<NavigationBarScreen> {
           label: "home".tr(),
           icon: Icon(Icons.home, size: GameSizes.getWidth(0.08)),
         ),
+    BottomNavigationBarItem(
+      label: "Daily Chalange",
+      icon: Icon(Icons.calendar_month, size: GameSizes.getWidth(0.08)),
+    ),
         BottomNavigationBarItem(
           label: "statistics".tr(),
           icon: Icon(Icons.bar_chart, size: GameSizes.getWidth(0.08)),
         ),
+
+    // BottomNavigationBarItem(
+    //   label: "Settings",
+    //   icon: Icon(Icons.bar_chart, size: GameSizes.getWidth(0.08)),
+    // ),
       ];
 }

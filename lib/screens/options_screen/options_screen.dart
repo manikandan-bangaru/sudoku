@@ -61,7 +61,7 @@ class _OptionsScreenState extends State<OptionsScreen>
                             context,
                             LocalizationManager.currentLocale.languageCode ==
                                     'en'
-                                ? LocalizationManager.supportedLocales[1]
+                                ? LocalizationManager.supportedLocales[0]
                                 : LocalizationManager.supportedLocales[0]),
                       ),
                     ],
@@ -106,7 +106,7 @@ class _OptionsScreenState extends State<OptionsScreen>
                         iconData: Icons.share,
                         loading: shareLoading,
                         onTap: () => shareApp("shareText".tr(args: [
-                          'https://play.google.com/store/apps/details?id=com.recepsenoglu.sudoku'
+                          'https://play.google.com/store/apps/details?id=com.magiban.org.sudoku'
                         ])),
                       ),
                     ],
