@@ -1,8 +1,0 @@
-include: package:extra_pedantic/analysis_options.yaml
-
-analyzer:
-  errors:
-    missing_default_value_for_parameter: info
-  strong-mode:
-    implicit-casts: false
-    implicit-dynamic: false

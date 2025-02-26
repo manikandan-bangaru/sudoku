@@ -1,9 +1,0 @@
-include: package:extra_pedantic/analysis_options_flutter.yaml
-
-analyzer:
-  errors:
-    missing_default_value_for_parameter: info
-  exclude: [build/**, lib/**/*.g.dart]
-  strong-mode:
-    implicit-casts: false
-    implicit-dynamic: false
