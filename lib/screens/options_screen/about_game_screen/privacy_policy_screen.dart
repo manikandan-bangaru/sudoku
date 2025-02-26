@@ -6,16 +6,18 @@ import '../../../utils/game_sizes.dart';
 import '../../../utils/game_text_styles.dart';
 
 class PrivacyPolicyScreen extends StatefulWidget {
-  const PrivacyPolicyScreen({super.key});
+  final String url;
+  const PrivacyPolicyScreen({this.url = "https://magiban.in/policy.html"});
 
   @override
-  State<PrivacyPolicyScreen> createState() => _PrivacyPolicyScreenState();
+  State<PrivacyPolicyScreen> createState() => _PrivacyPolicyScreenState(url: this.url);
 }
 
 class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
   late WebViewController _controller;
   int progress = 0;
-
+  String url;
+  _PrivacyPolicyScreenState({required this.url});
   @override
   void initState() {
     super.initState();
@@ -50,7 +52,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
           },
         ),
       )
-      ..loadRequest(Uri.parse("https://magiban.in/policy.html"));
+      ..loadRequest(Uri.parse(url));
   }
 
   @override

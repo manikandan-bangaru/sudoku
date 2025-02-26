@@ -26,6 +26,7 @@ class GameRoutes {
   static const String privacyPolicyScreen = '/privacy_policy_screen';
   static const String rulesScreen = '/rules_screen';
   static const String howToPlayScreen = '/how_to_play_screen';
+  static const String moreAppsScreen = '/more_apps_screen';
 
 
   static Route<dynamic>? generateRoute(RouteSettings settings) {
@@ -62,7 +63,8 @@ class GameRoutes {
         return MaterialPageRoute(builder: (_) => const RulesScreen());
       case howToPlayScreen:
         return MaterialPageRoute(builder: (_) => const HowToPlayScreen());
-
+      case moreAppsScreen:
+        return MaterialPageRoute(builder: (_) => const PrivacyPolicyScreen(url: 'https://magiban.in/index.html',));
       default:
         return _errorRoute();
     }

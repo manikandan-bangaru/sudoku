@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../daily_challenges_screen/daily_challenges_screen.dart';
+import '../options_screen/options_screen.dart';
 import '../options_screen/settings_screen/settings_screen.dart';
 import '/utils/game_sizes.dart';
 
@@ -40,6 +41,7 @@ class _NavigationBarScreenState extends State<NavigationBarScreen> {
       MainScreen(savedGame: widget.savedGame),
       const DailyChallengesScreen(),
       const StatisticsScreen(),
+      const OptionsScreen(hideDoneButton: true,),
       // const SettingsScreen()
     ];
     return Scaffold(
@@ -77,9 +79,9 @@ class _NavigationBarScreenState extends State<NavigationBarScreen> {
           icon: Icon(Icons.bar_chart, size: GameSizes.getWidth(0.08)),
         ),
 
-    // BottomNavigationBarItem(
-    //   label: "Settings",
-    //   icon: Icon(Icons.bar_chart, size: GameSizes.getWidth(0.08)),
-    // ),
+    BottomNavigationBarItem(
+      label: "Settings",
+      icon: Icon(Icons.settings, size: GameSizes.getWidth(0.08)),
+    ),
       ];
 }
