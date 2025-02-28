@@ -15,7 +15,9 @@ import '../../widgets/sudoku_board/exports.dart';
 import 'game_screen_provider.dart';
 
 class GameScreen extends StatelessWidget {
-  const GameScreen({required this.gameModel, super.key});
+  GameScreen({required this.gameModel, super.key}) {
+    AdMobMobileHelper.sharedInstance.loadAds();
+  }
   final GameModel gameModel;
 
   @override
@@ -37,8 +39,9 @@ class GameScreen extends StatelessWidget {
               ActionButtons(provider: provider),
               const Spacer(),
               NumberButtons(provider: provider),
+              const SizedBox(height: 12,),
+              if (shouldShowAdForThisUser) BannerAdWidget(height: 40,),
               const Spacer(),
-              if (shouldShowAdForThisUser) BannerAdWidget(),
               // const Spacer(flex: 1),
             ],
           ),

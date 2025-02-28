@@ -2,6 +2,7 @@
 
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import 'AdMobConstants.dart';
 import 'adMobIntegration.dart';
@@ -19,7 +20,7 @@ class _BannerAdmobState extends State<BannerAdWidget>{
 
   late BannerAd _bannerAd;
   bool _bannerReady = false;
-  double height = 40.00;
+  double height = 50.00;
   _BannerAdmobState({required this.height});
   @override
   void initState() {
