@@ -8,17 +8,19 @@ import 'package:url_launcher/url_launcher.dart';
 
 class PrivacyPolicyScreen extends StatefulWidget {
   final String url;
-  const PrivacyPolicyScreen({this.url = "https://magiban.in/policy.html"});
+  final String title;
+  const PrivacyPolicyScreen({this.url = "https://magiban.in/policy.html",this.title = 'Privacy Policy'});
 
   @override
-  State<PrivacyPolicyScreen> createState() => _PrivacyPolicyScreenState(url: this.url);
+  State<PrivacyPolicyScreen> createState() => _PrivacyPolicyScreenState(url: this.url, title: this.title);
 }
 
 class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
   late WebViewController _controller;
   int progress = 0;
   String url;
-  _PrivacyPolicyScreenState({required this.url});
+  final String title;
+  _PrivacyPolicyScreenState({required this.url, required this.title});
   @override
   void initState() {
     super.initState();
@@ -61,22 +63,24 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0.5,
-        centerTitle: true,
-        backgroundColor: GameColors.appBarBackground,
-        title: Text(
-          'Privacy Policy',
-          style: GameTextStyles.optionsScreenAppBarTitle
-              .copyWith(fontSize: GameSizes.getWidth(0.045)),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0.5,
+          centerTitle: true,
+          backgroundColor: GameColors.appBarBackground,
+          title: Text(
+            this.title,
+            style: GameTextStyles.optionsScreenAppBarTitle
+                .copyWith(fontSize: GameSizes.getWidth(0.045)),
+          ),
+          leading: const BackButton(),
         ),
-        leading: const BackButton(),
-      ),
-      body: Visibility(
-        visible: progress >= 100,
-        replacement: LinearProgressIndicator(value: progress * 1.0),
-        child: WebViewWidget(controller: _controller),
+        body: Visibility(
+          visible: progress >= 100,
+          replacement: LinearProgressIndicator(value: progress * 1.0),
+          child: WebViewWidget(controller: _controller),
+        ),
       ),
     );
   }

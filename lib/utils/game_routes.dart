@@ -64,7 +64,7 @@ class GameRoutes {
       case howToPlayScreen:
         return MaterialPageRoute(builder: (_) => const HowToPlayScreen());
       case moreAppsScreen:
-        return MaterialPageRoute(builder: (_) => const PrivacyPolicyScreen(url: 'https://magiban.in/index.html',));
+        return MaterialPageRoute(builder: (_) => const PrivacyPolicyScreen(url: 'https://magiban.in/index.html',title: "More Apps",));
       default:
         return _errorRoute();
     }
