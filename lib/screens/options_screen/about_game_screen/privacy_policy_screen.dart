@@ -47,7 +47,11 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
           },
           onNavigationRequest: (NavigationRequest request) async {
             // IT OPEN THE application in playStore
-              await launchUrl(Uri.parse(request.url),mode: LaunchMode.externalApplication);
+              if (await canLaunchUrl(Uri.parse(request.url))) {
+                await launchUrl(Uri.parse(request.url), mode: LaunchMode.externalApplication);
+              } else {
+                throw "Could not launch $url";
+              }
               return NavigationDecision.prevent;
           },
         ),
