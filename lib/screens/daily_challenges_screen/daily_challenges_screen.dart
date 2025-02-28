@@ -232,7 +232,7 @@ class TopBlueBox extends StatelessWidget {
             GameStrings.dailyChallenges,
             style: GameTextStyles.dailyChallengesTitle,
           ),
-          const Icon(Icons.task_alt, size: 180.00,color: Colors.white,),
+          FittedBox(child: const Icon(Icons.task_alt, size: 180.00,color: Colors.white,)),
         ],
       ),
     );

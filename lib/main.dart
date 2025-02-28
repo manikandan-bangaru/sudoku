@@ -8,6 +8,7 @@ import 'utils/game_sizes.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge, overlays: []);
   await EasyLocalization.ensureInitialized();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(
@@ -33,7 +34,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(useMaterial3: true,
         segmentedButtonTheme: const SegmentedButtonThemeData(
           selectedIcon: SizedBox.shrink(), // Hide tick mark
-        ),),
+        ),
+    ),
       navigatorKey: GameRoutes.navigatorKey,
       onGenerateRoute: GameRoutes.generateRoute,
       initialRoute: GameRoutes.navigationBar,
