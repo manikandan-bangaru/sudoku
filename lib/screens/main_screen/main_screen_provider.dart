@@ -9,8 +9,9 @@ import '/widgets/modal_bottom_sheet/modal_bottom_sheets.dart';
 
 class MainScreenProvider with ChangeNotifier {
   GameModel? savedGame;
-  Difficulty selectedDificulty = Difficulty.Easy;
+  static Difficulty selectedDificulty = Difficulty.Easy;
   MainScreenProvider({this.savedGame}) {
+    // selectedDificulty = Difficulty.Easy;
     _init();
   }
   late StorageService storageService;
@@ -21,11 +22,10 @@ class MainScreenProvider with ChangeNotifier {
     notifyListeners();
   }
   Future<void> saveDiffiCulty(Difficulty diff) async {
-    this.selectedDificulty = diff;
+    MainScreenProvider.selectedDificulty = diff;
     await storageService.saveDifficulty(diff);
   }
   Future<Difficulty> getDiffiCulty() async {
-
    return await storageService.getDifficulty();
   }
 

@@ -70,45 +70,49 @@ class _MainScreen extends State<MainScreen>
                 const AppLogo(),
                 GameTitle(title: "appName".tr(args: [":\n"])),
           SegmentedButton<Difficulty>(
-          style: SegmentedButton.styleFrom(
-          backgroundColor: GameColors.optionsBackground,
-          foregroundColor: Colors.black,
-          selectedForegroundColor: Colors.white,
-          selectedBackgroundColor: GameColors.selectedColor,
+          style:  ButtonStyle(
+            side: MaterialStateProperty.resolveWith<BorderSide>(
+                  (Set<MaterialState> states) {
+                if (states.contains(MaterialState.selected)) {
+                  return BorderSide(color: Colors.blue, width: 2); // Selected border color
+                }
+                return BorderSide(color: GameColors.roundedButton, width: 1); // Default border color
+              },
+            ),
+            backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                  (states) {
+                if (states.contains(MaterialState.selected)) {
+                  return GameColors.roundedButton; // Selected background
+                }
+                return GameColors.optionsBackground; // Default background
+              },
+            ),
+            foregroundColor: MaterialStateProperty.resolveWith<Color>(
+                  (states) {
+                if (states.contains(MaterialState.selected)) {
+                  return Colors.white; // Selected foreground
+                }
+                return GameColors.roundedButton; // Default foreground
+              },
+            ),
+            shape: MaterialStateProperty.all<OutlinedBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10), // Rounded corners
+              ),
+            ),
           ),
-          segments: const <ButtonSegment<Difficulty>>[
-          ButtonSegment<Difficulty>(
-          value: Difficulty.Easy,
-          label: Text("Easy", style: TextStyle(fontSize: 14)),
-          icon: null,
-
-          // icon: Icon(Icons.one_k_rounded),
-          ),
-          ButtonSegment<Difficulty>(
-          value: Difficulty.Medium,
-          label: Text('Medium',style: TextStyle(fontSize: 12),),
-          // icon: Icon(Icons.two_k_rounded),
-          ),
-          ButtonSegment<Difficulty>(
-          value: Difficulty.Hard,
-          label: Text('Hard',style: TextStyle(fontSize: 14)),
-          // icon: Icon(Icons.three_k_rounded),
-          ),
-          ButtonSegment<Difficulty>(
-          value: Difficulty.Expert,
-          label: Text('Expert',style: TextStyle(fontSize: 14)),
-          // icon: Icon(Icons.four_k_rounded),
-          ),
-          ButtonSegment<Difficulty>(
-          value: Difficulty.Grandmaster,
-          label: Text('Master',style: TextStyle(fontSize: 14)),
-          // icon: Icon(Icons.five_k_rounded),
-          ),
+          segments: [
+            for (var diff in Difficulty.values)
+              ButtonSegment(
+              value: diff,
+              label: FittedBox(child: Text(diff.name, style: TextStyle(fontSize: 12))),
+              // icon: Icon(Icons.one_k_rounded),
+            ),
           ],
-          selected: <Difficulty>{provider.selectedDificulty},
+          selected: <Difficulty>{MainScreenProvider.selectedDificulty},
           onSelectionChanged: (Set<Difficulty> newSelection) async {
           setState(()  {
-            provider.selectedDificulty = newSelection.first;
+            MainScreenProvider.selectedDificulty = newSelection.first;
           });
           await provider.storageService.saveDifficulty(newSelection.first);
           },
@@ -135,7 +139,7 @@ class _MainScreen extends State<MainScreen>
                         buttonText: "newGame".tr(),
                         whiteButton: provider.isThereASavedGame,
                         elevation: provider.isThereASavedGame ? 5 : 0,
-                        onPressed: ()=> provider.newGame(provider.selectedDificulty),
+                        onPressed: ()=> provider.newGame(MainScreenProvider.selectedDificulty),
                         textSize: GameSizes.getHeight(0.022),
                       ),
                       Spacer(flex: 1,),

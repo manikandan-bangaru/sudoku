@@ -33,8 +33,8 @@ class StorageService {
       result = Difficulty.Hard;
     } else if (diff == Difficulty.Expert.name) {
       result = Difficulty.Expert;
-    } else if (diff == Difficulty.Grandmaster.name) {
-      result = Difficulty.Grandmaster;
+    } else if (diff == Difficulty.Master.name) {
+      result = Difficulty.Master;
     }
     return result;
   }

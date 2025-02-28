@@ -39,7 +39,7 @@ class GameSettings {
         return 28;
       case Difficulty.Expert:
         return 22;
-      case Difficulty.Grandmaster:
+      case Difficulty.Master:
         return 23;
       default:
         return 30;

@@ -89,7 +89,7 @@ class CalendarWidget extends StatelessWidget {
 
     return Expanded(
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 20),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
         child: Column(
           children: [
             Row(
@@ -225,15 +225,23 @@ class TopBlueBox extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.only(top: GameSizes.topPadding + 20),
       decoration: BoxDecoration(color: Colors.blue.shade700),
-      child: Column(
-        children: [
-          const SizedBox(height: 18),
-          Text(
-            GameStrings.dailyChallenges,
-            style: GameTextStyles.dailyChallengesTitle,
-          ),
-          FittedBox(child: const Icon(Icons.task_alt, size: 180.00,color: Colors.white,)),
-        ],
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return Column(
+            children: [
+              SizedBox(height: constraints.maxHeight *0.05),
+              SizedBox(
+                height: constraints.maxHeight *0.15,
+                child: Text(
+                  GameStrings.dailyChallenges,
+                  style: GameTextStyles.dailyChallengesTitle,
+
+                ),
+              ),
+              FittedBox(child: Icon(Icons.task_alt,size: constraints.maxHeight *0.8, color: Colors.white,),),
+            ],
+          );
+        }
       ),
     );
   }
