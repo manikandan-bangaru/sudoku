@@ -24,21 +24,24 @@ class DailyChallengesScreen extends StatelessWidget {
     ],
       child: Consumer2<DailyChallengesScreenProvider,StatisticsScreenProvider>(
         builder: (context, dailyProvider, statsProvider, _) {
-          return Scaffold(
-            // backgroundColor: GameColors.dailyChallengesScreenBg,
-            body: Stack(
-              children: [
-                Column(
-                  children: [
-                    const TopBlueBox(),
-                    CalendarWidget(daily_challenge_provider: dailyProvider,stats_provider: statsProvider,),
-                    PlayButton(onPressed: dailyProvider.play),
-                    const SizedBox(height: 20),
-                    if (shouldShowAdForThisUser) BannerAdWidget(),
-                  ],
-                ),
-                // Image.asset('assets/images/inProgress.png'),
-              ],
+          return PopScope(
+            canPop: false,
+            child: Scaffold(
+              // backgroundColor: GameColors.dailyChallengesScreenBg,
+              body: Stack(
+                children: [
+                  Column(
+                    children: [
+                      const TopBlueBox(),
+                      CalendarWidget(daily_challenge_provider: dailyProvider,stats_provider: statsProvider,),
+                      PlayButton(onPressed: dailyProvider.play),
+                      const SizedBox(height: 20),
+                      if (shouldShowAdForThisUser) BannerAdWidget(),
+                    ],
+                  ),
+                  // Image.asset('assets/images/inProgress.png'),
+                ],
+              ),
             ),
           );
         },

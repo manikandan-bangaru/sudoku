@@ -71,124 +71,127 @@ class _OptionsScreenState extends State<OptionsScreen>
       create: (context) => OptionsScreenProvider(),
       child: Consumer<OptionsScreenProvider>(
         builder: ((context, provider, _) {
-          return Scaffold(
-            backgroundColor: GameColors.optionsBackground,
-            appBar: AppBar(
-              elevation: 0.5,
-              leadingWidth: 0,
-              centerTitle: true,
-              backgroundColor: GameColors.appBarBackground,
-              title: Text(
-                "Settings",
-                style: GameTextStyles.optionsScreenAppBarTitle
-                    .copyWith(fontSize: GameSizes.getWidth(0.045)),
+          return PopScope(
+            canPop: false,
+            child: Scaffold(
+              backgroundColor: GameColors.optionsBackground,
+              appBar: AppBar(
+                elevation: 0.5,
+                leadingWidth: 0,
+                centerTitle: true,
+                backgroundColor: GameColors.appBarBackground,
+                title: Text(
+                  "Settings",
+                  style: GameTextStyles.optionsScreenAppBarTitle
+                      .copyWith(fontSize: GameSizes.getWidth(0.045)),
+                ),
+                leading: const SizedBox.shrink(),
+                actions: this.hideDoneButton ? [] : [CustomTextButton(text: "done".tr())],
               ),
-              leading: const SizedBox.shrink(),
-              actions: this.hideDoneButton ? [] : [CustomTextButton(text: "done".tr())],
-            ),
-            body: SingleChildScrollView(
-              padding: GameSizes.getSymmetricPadding(0.04, 0.02),
-              child: Column(
-                children: [
-                  const Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("  Launguage",style: TextStyle(fontSize: 18),),
-                    ],
-                  ),
-                  OptionGroup(
-                    options: [
-                      OptionWidget(
-                        title: LocalizationManager.currentLanguageName,
-                        iconColor: Colors.pink,
-                        iconData: Icons.language,
-                        onTap: () => LocalizationManager.changeLocale(
-                            context,
-                            LocalizationManager.currentLocale.languageCode ==
-                                    'en'
-                                ? LocalizationManager.supportedLocales[0]
-                                : LocalizationManager.supportedLocales[0]),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20,),
-                  const Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("  Guide",style: TextStyle(fontSize: 18),),
-                    ],
-                  ),
-                  OptionGroup(
-                    options: [
-                      OptionWidget(
-                        title: "howToPlay".tr(),
-                        iconColor: Colors.green,
-                        iconData: Icons.school,
-                        onTap: () => GameRoutes.goTo(GameRoutes.howToPlayScreen,
-                            enableBack: true),
-                      ),
-                      OptionWidget(
-                        title: "rules".tr(),
-                        iconColor: Colors.lightBlue,
-                        iconData: Icons.menu_book_rounded,
-                        onTap: () => GameRoutes.goTo(GameRoutes.rulesScreen,
-                            enableBack: true),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20,),
-                  const Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("  Privacy",style: TextStyle(fontSize: 18),),
-                    ],
-                  ),
-                  OptionGroup(
-                    options: [
-                      OptionWidget(
-                        title: "privacyPolicy".tr(),
-                        iconColor: Colors.red,
-                        iconData: Icons.privacy_tip,
-                        onTap: () => GameRoutes.goTo(GameRoutes.privacyPolicyScreen,
-                            enableBack: true),
-                      ),
-                      OptionWidget(
-                        title: "moreApps".tr(),
-                        iconColor: Colors.green,
-                        iconData: Icons.apps,
-                        onTap: () => GameRoutes.goTo(GameRoutes.moreAppsScreen,
-                            enableBack: true),
-                      ),
-                      OptionWidget(
-                        title: "rateUs".tr(),
-                        iconColor: Colors.yellow,
-                        iconData: Icons.star,
-                        loading: reviewLoading,
-                        onTap: () => openStoreListing(),
-                      ),
-                      OptionWidget(
-                        title: "share".tr(),
-                        iconColor: Colors.orange,
-                        iconData: Icons.share,
-                        loading: shareLoading,
-                        onTap: () => shareApp("shareText".tr(args: [
-                          "$storeDomainURL$_packageName"
-                        ])),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20,),
-                  const Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("  About",style: TextStyle(fontSize: 18),),
-                    ],
-                  ),
-                  SizedBox(height: 10,),
-                  AboutGameWidget(),
-                  SizedBox(height: 10,),
-                  if (shouldShowAdForThisUser) BannerAdWidget(),
-                ],
+              body: SingleChildScrollView(
+                padding: GameSizes.getSymmetricPadding(0.04, 0.02),
+                child: Column(
+                  children: [
+                    const Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("  Launguage",style: TextStyle(fontSize: 18),),
+                      ],
+                    ),
+                    OptionGroup(
+                      options: [
+                        OptionWidget(
+                          title: LocalizationManager.currentLanguageName,
+                          iconColor: Colors.pink,
+                          iconData: Icons.language,
+                          onTap: () => LocalizationManager.changeLocale(
+                              context,
+                              LocalizationManager.currentLocale.languageCode ==
+                                      'en'
+                                  ? LocalizationManager.supportedLocales[0]
+                                  : LocalizationManager.supportedLocales[0]),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20,),
+                    const Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("  Guide",style: TextStyle(fontSize: 18),),
+                      ],
+                    ),
+                    OptionGroup(
+                      options: [
+                        OptionWidget(
+                          title: "howToPlay".tr(),
+                          iconColor: Colors.green,
+                          iconData: Icons.school,
+                          onTap: () => GameRoutes.goTo(GameRoutes.howToPlayScreen,
+                              enableBack: true),
+                        ),
+                        OptionWidget(
+                          title: "rules".tr(),
+                          iconColor: Colors.lightBlue,
+                          iconData: Icons.menu_book_rounded,
+                          onTap: () => GameRoutes.goTo(GameRoutes.rulesScreen,
+                              enableBack: true),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20,),
+                    const Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("  Privacy",style: TextStyle(fontSize: 18),),
+                      ],
+                    ),
+                    OptionGroup(
+                      options: [
+                        OptionWidget(
+                          title: "privacyPolicy".tr(),
+                          iconColor: Colors.red,
+                          iconData: Icons.privacy_tip,
+                          onTap: () => GameRoutes.goTo(GameRoutes.privacyPolicyScreen,
+                              enableBack: true),
+                        ),
+                        OptionWidget(
+                          title: "moreApps".tr(),
+                          iconColor: Colors.green,
+                          iconData: Icons.apps,
+                          onTap: () => GameRoutes.goTo(GameRoutes.moreAppsScreen,
+                              enableBack: true),
+                        ),
+                        OptionWidget(
+                          title: "rateUs".tr(),
+                          iconColor: Colors.yellow,
+                          iconData: Icons.star,
+                          loading: reviewLoading,
+                          onTap: () => openStoreListing(),
+                        ),
+                        OptionWidget(
+                          title: "share".tr(),
+                          iconColor: Colors.orange,
+                          iconData: Icons.share,
+                          loading: shareLoading,
+                          onTap: () => shareApp("shareText".tr(args: [
+                            "$storeDomainURL$_packageName"
+                          ])),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 20,),
+                    const Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("  About",style: TextStyle(fontSize: 18),),
+                      ],
+                    ),
+                    SizedBox(height: 10,),
+                    AboutGameWidget(),
+                    SizedBox(height: 10,),
+                    if (shouldShowAdForThisUser) BannerAdWidget(),
+                  ],
+                ),
               ),
             ),
           );

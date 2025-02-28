@@ -33,32 +33,35 @@ class StatisticsScreen extends StatelessWidget {
         create: (context) => StatisticsScreenProvider(),
         child:
             Consumer<StatisticsScreenProvider>(builder: (context, provider, _) {
-          return Scaffold(
-            backgroundColor: GameColors.background,
-            appBar: StatisticsAppBar(
-              onTimeInterval: provider.changeTimeInterval,
-              difficulties: GameSettings.getDifficulties,
-            ),
-            body: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (provider.loading) ...[
-                  const Center(child: CupertinoActivityIndicator()),
-                ] else ...[
-                  Expanded(
-                    child: TabBarView(
-                      children: List.generate(
-                        difficulties.length,
-                        (index) => Statistics(
-                          provider: provider,
-                          statGroupModel:
-                              provider.getStatGroup(difficulties[index]),
+          return PopScope(
+            canPop: false,
+            child: Scaffold(
+              backgroundColor: GameColors.background,
+              appBar: StatisticsAppBar(
+                onTimeInterval: provider.changeTimeInterval,
+                difficulties: GameSettings.getDifficulties,
+              ),
+              body: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (provider.loading) ...[
+                    const Center(child: CupertinoActivityIndicator()),
+                  ] else ...[
+                    Expanded(
+                      child: TabBarView(
+                        children: List.generate(
+                          difficulties.length,
+                          (index) => Statistics(
+                            provider: provider,
+                            statGroupModel:
+                                provider.getStatGroup(difficulties[index]),
+                          ),
                         ),
                       ),
                     ),
-                  ),
+                  ],
                 ],
-              ],
+              ),
             ),
           );
         }),

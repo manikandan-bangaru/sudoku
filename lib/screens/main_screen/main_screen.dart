@@ -38,119 +38,122 @@ class _MainScreen extends State<MainScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: GameColors.mainScreenBg,
-      appBar: AppBar(
-        elevation: 0,
-        toolbarHeight: GameSizes.getWidth(0.12),
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
         backgroundColor: GameColors.mainScreenBg,
-        systemOverlayStyle: SystemUiOverlayStyle.dark,
-        leading: const SizedBox.shrink(),
-        // actions: [
-        //   AppBarActionButton(
-        //     onPressed: () =>
-        //         GameRoutes.goTo(GameRoutes.optionsScreen, enableBack: true),
-        //     icon: Icons.settings_outlined,
-        //     iconSize: GameSizes.getWidth(0.08),
-        //   ),
-        //   SizedBox(width: GameSizes.getWidth(0.02)),
-        // ],
-      ),
-      body: ChangeNotifierProvider<MainScreenProvider>(
-        create: (context) => MainScreenProvider(savedGame: savedGame),
-        child: Consumer<MainScreenProvider>(builder: (context, provider, _) {
-          return
-            // Padding(
-            // padding: GameSizes.getSymmetricPadding(0.05, 0.02),
-            // child:
-          Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // const ChallengeAndEvents(),
-                const AppLogo(),
-                GameTitle(title: "appName".tr(args: [":\n"])),
-          SegmentedButton<Difficulty>(
-          style:  ButtonStyle(
-            side: MaterialStateProperty.resolveWith<BorderSide>(
-                  (Set<MaterialState> states) {
-                if (states.contains(MaterialState.selected)) {
-                  return BorderSide(color: Colors.blue, width: 2); // Selected border color
-                }
-                return BorderSide(color: GameColors.roundedButton, width: 1); // Default border color
-              },
-            ),
-            backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                  (states) {
-                if (states.contains(MaterialState.selected)) {
-                  return GameColors.roundedButton; // Selected background
-                }
-                return GameColors.optionsBackground; // Default background
-              },
-            ),
-            foregroundColor: MaterialStateProperty.resolveWith<Color>(
-                  (states) {
-                if (states.contains(MaterialState.selected)) {
-                  return Colors.white; // Selected foreground
-                }
-                return GameColors.roundedButton; // Default foreground
-              },
-            ),
-            shape: MaterialStateProperty.all<OutlinedBorder>(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10), // Rounded corners
+        appBar: AppBar(
+          elevation: 0,
+          toolbarHeight: GameSizes.getWidth(0.12),
+          backgroundColor: GameColors.mainScreenBg,
+          systemOverlayStyle: SystemUiOverlayStyle.dark,
+          leading: const SizedBox.shrink(),
+          // actions: [
+          //   AppBarActionButton(
+          //     onPressed: () =>
+          //         GameRoutes.goTo(GameRoutes.optionsScreen, enableBack: true),
+          //     icon: Icons.settings_outlined,
+          //     iconSize: GameSizes.getWidth(0.08),
+          //   ),
+          //   SizedBox(width: GameSizes.getWidth(0.02)),
+          // ],
+        ),
+        body: ChangeNotifierProvider<MainScreenProvider>(
+          create: (context) => MainScreenProvider(savedGame: savedGame),
+          child: Consumer<MainScreenProvider>(builder: (context, provider, _) {
+            return
+              // Padding(
+              // padding: GameSizes.getSymmetricPadding(0.05, 0.02),
+              // child:
+            Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // const ChallengeAndEvents(),
+                  const AppLogo(),
+                  GameTitle(title: "appName".tr(args: [":\n"])),
+            SegmentedButton<Difficulty>(
+            style:  ButtonStyle(
+              side: MaterialStateProperty.resolveWith<BorderSide>(
+                    (Set<MaterialState> states) {
+                  if (states.contains(MaterialState.selected)) {
+                    return BorderSide(color: Colors.blue, width: 2); // Selected border color
+                  }
+                  return BorderSide(color: GameColors.roundedButton, width: 1); // Default border color
+                },
+              ),
+              backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                    (states) {
+                  if (states.contains(MaterialState.selected)) {
+                    return GameColors.roundedButton; // Selected background
+                  }
+                  return GameColors.optionsBackground; // Default background
+                },
+              ),
+              foregroundColor: MaterialStateProperty.resolveWith<Color>(
+                    (states) {
+                  if (states.contains(MaterialState.selected)) {
+                    return Colors.white; // Selected foreground
+                  }
+                  return GameColors.roundedButton; // Default foreground
+                },
+              ),
+              shape: MaterialStateProperty.all<OutlinedBorder>(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10), // Rounded corners
+                ),
               ),
             ),
-          ),
-          segments: [
-            for (var diff in Difficulty.values)
-              ButtonSegment(
-              value: diff,
-              label: FittedBox(child: Text(diff.name, style: TextStyle(fontSize: 12))),
-              // icon: Icon(Icons.one_k_rounded),
+            segments: [
+              for (var diff in Difficulty.values)
+                ButtonSegment(
+                value: diff,
+                label: FittedBox(child: Text(diff.name, style: TextStyle(fontSize: 12))),
+                // icon: Icon(Icons.one_k_rounded),
+              ),
+            ],
+            selected: <Difficulty>{MainScreenProvider.selectedDificulty},
+            onSelectionChanged: (Set<Difficulty> newSelection) async {
+            setState(()  {
+              MainScreenProvider.selectedDificulty = newSelection.first;
+            });
+            await provider.storageService.saveDifficulty(newSelection.first);
+            },
             ),
-          ],
-          selected: <Difficulty>{MainScreenProvider.selectedDificulty},
-          onSelectionChanged: (Set<Difficulty> newSelection) async {
-          setState(()  {
-            MainScreenProvider.selectedDificulty = newSelection.first;
-          });
-          await provider.storageService.saveDifficulty(newSelection.first);
-          },
-          ),
-                Container(
-                  height: GameSizes.getHeight(0.25),
-                  padding: GameSizes.getHorizontalPadding(0.05),
-                  child: Column(
-                    children: [
-                      Visibility(
-                          visible: provider.isThereASavedGame,
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                                bottom: GameSizes.getHeight(0.02)),
-                            child: RoundedButton(
-                              buttonText: "continueGame".tr(),
-                              subText: provider.continueGameButtonText,
-                              subIcon: Icons.watch_later_outlined,
-                              onPressed: provider.continueGame,
-                              textSize: GameSizes.getHeight(0.02),
-                            ),
-                          )),
-                      RoundedButton(
-                        buttonText: "newGame".tr(),
-                        whiteButton: provider.isThereASavedGame,
-                        elevation: provider.isThereASavedGame ? 5 : 0,
-                        onPressed: ()=> provider.newGame(MainScreenProvider.selectedDificulty),
-                        textSize: GameSizes.getHeight(0.022),
-                      ),
-                      Spacer(flex: 1,),
-                      if (shouldShowAdForThisUser) BannerAdWidget(),
-                    ],
+                  Container(
+                    height: GameSizes.getHeight(0.25),
+                    padding: GameSizes.getHorizontalPadding(0.05),
+                    child: Column(
+                      children: [
+                        Visibility(
+                            visible: provider.isThereASavedGame,
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  bottom: GameSizes.getHeight(0.02)),
+                              child: RoundedButton(
+                                buttonText: "continueGame".tr(),
+                                subText: provider.continueGameButtonText,
+                                subIcon: Icons.watch_later_outlined,
+                                onPressed: provider.continueGame,
+                                textSize: GameSizes.getHeight(0.02),
+                              ),
+                            )),
+                        RoundedButton(
+                          buttonText: "newGame".tr(),
+                          whiteButton: provider.isThereASavedGame,
+                          elevation: provider.isThereASavedGame ? 5 : 0,
+                          onPressed: ()=> provider.newGame(MainScreenProvider.selectedDificulty),
+                          textSize: GameSizes.getHeight(0.022),
+                        ),
+                        Spacer(flex: 1,),
+                        if (shouldShowAdForThisUser) BannerAdWidget(),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            // ),
-          );
-        }),
+                ],
+              // ),
+            );
+          }),
+        ),
       ),
     );
   }
