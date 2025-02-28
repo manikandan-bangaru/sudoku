@@ -70,7 +70,7 @@ class _MainScreen extends State<MainScreen>
                 children: [
                   // const ChallengeAndEvents(),
                   const AppLogo(),
-                  GameTitle(title: "appName".tr(args: [":\n"])),
+                  GameTitle(title: "appName".tr(args: ["\n"])),
             SegmentedButton<Difficulty>(
             style:  ButtonStyle(
               side: MaterialStateProperty.resolveWith<BorderSide>(
