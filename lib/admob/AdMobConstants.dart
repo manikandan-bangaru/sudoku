@@ -95,25 +95,3 @@ class TestAdsAdmobConstants {
 class NativeAdFactoryConstanst {
   static const NativeAdUnitFactoryIdentifier = "NativeAdUnitFactoryIdentifier";
 }
-
-// TODO: Register this in MainActivity
-// import io.flutter.embedding.android.FlutterActivity
-// import io.flutter.embedding.engine.FlutterEngine;
-// import io.flutter.plugins.googlemobileads.GoogleMobileAdsPlugin;
-// class MainActivity : FlutterActivity() {
-//   @Override
-//   fun configureFlutterEngine(flutterEngine: FlutterEngine?) {
-//     super.configureFlutterEngine(flutterEngine)
-//     GoogleMobileAdsPlugin.registerNativeAdFactory(
-//         flutterEngine,
-//         "NativeAdUnitFactoryIdentifier",
-//         MyNativeAdFactory(getContext())
-//     )
-//   }
-//
-//   @Override
-//   fun cleanUpFlutterEngine(flutterEngine: FlutterEngine?) {
-//     super.cleanUpFlutterEngine(flutterEngine)
-//     GoogleMobileAdsPlugin.unregisterNativeAdFactory(flutterEngine, "adFactoryExample")
-//   }
-// }

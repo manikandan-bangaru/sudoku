@@ -4,6 +4,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../../../utils/game_colors.dart';
 import '../../../utils/game_sizes.dart';
 import '../../../utils/game_text_styles.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PrivacyPolicyScreen extends StatefulWidget {
   final String url;
@@ -44,11 +45,10 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
               ),
             );
           },
-          onNavigationRequest: (NavigationRequest request) {
-            if (request.url.startsWith('https://www.youtube.com/')) {
+          onNavigationRequest: (NavigationRequest request) async {
+            // IT OPEN THE application in playStore
+              await launchUrl(Uri.parse(request.url),mode: LaunchMode.externalApplication);
               return NavigationDecision.prevent;
-            }
-            return NavigationDecision.navigate;
           },
         ),
       )

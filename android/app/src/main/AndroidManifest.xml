@@ -7,6 +7,7 @@
     </queries>
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
     <application
         android:label="Sudoku Puzzle"
         android:name="${applicationName}"
