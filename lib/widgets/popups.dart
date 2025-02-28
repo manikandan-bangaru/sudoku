@@ -77,7 +77,7 @@ class Popup {
             Navigator.pop(GameRoutes.navigatorKey.currentContext!);
           }),
       RoundedButton(
-          buttonText: "To Resume watch an Ad",
+          buttonText: "Watch Ad to Continue",
           onPressed: () {
             AdMobMobileHelper.sharedInstance.showRewardAd( isSuccess: (bool isSuccess) {
               Navigator.pop(dialogContext);
