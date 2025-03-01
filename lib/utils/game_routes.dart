@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sudoku/app-purchase/InAppPurchaseHelper.dart';
 import '/models/game_model.dart';
 import '/screens/game_screen/game_screen.dart';
 import '/screens/navigation_bar/navigation_bar_screen.dart';
@@ -27,6 +28,7 @@ class GameRoutes {
   static const String rulesScreen = '/rules_screen';
   static const String howToPlayScreen = '/how_to_play_screen';
   static const String moreAppsScreen = '/more_apps_screen';
+  static const String inAppPurchase = '/inAppPurchase';
 
 
   static Route<dynamic>? generateRoute(RouteSettings settings) {
@@ -65,6 +67,9 @@ class GameRoutes {
         return MaterialPageRoute(builder: (_) => const HowToPlayScreen());
       case moreAppsScreen:
         return MaterialPageRoute(builder: (_) => const PrivacyPolicyScreen(url: 'https://magiban.in/index.html',title: "More Apps",));
+      case inAppPurchase:
+        return MaterialPageRoute(builder: (_) =>  InAppPurchange());
+
       default:
         return _errorRoute();
     }
