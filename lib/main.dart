@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '/services/localization_manager.dart';
-
+import 'alocalNotification/localNotificationHelper.dart';
 import 'utils/game_routes.dart';
 import 'utils/game_sizes.dart';
 
@@ -11,6 +11,7 @@ Future<void> main() async {
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge, overlays: []);
   await EasyLocalization.ensureInitialized();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  await LocalNotificationHelper.initialize();
   runApp(
     EasyLocalization(
       path: LocalizationManager.path,
@@ -24,8 +25,19 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  void _onViewDidAppear(BuildContext context) {
+    // This will run after the widget appears
+    print("View did appear!");
+    // You can also show dialogs/snackbars/etc. here
+    LocalNotificationHelper().requestPermissionAndScheduleNotification();
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _onViewDidAppear(context);
+    });
     GameSizes.init(context);
 
     return MaterialApp(

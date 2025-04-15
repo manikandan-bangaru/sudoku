@@ -47,6 +47,9 @@ dependencies:
   in_app_purchase_storekit: any
   in_app_purchase: any
   in_app_purchase_android: any
+  flutter_local_notifications: any
+  permission_handler: any
+  timezone: any
 
 dev_dependencies:
   flutter_test:
