@@ -13,8 +13,8 @@ class LocalNotificationHelper {
 
   /// Initialize time zones and local notifications
   static Future<void> initialize() async {
-    tz.initializeTimeZones();
-
+    await setupTimezoneFromDevice();
+    _notificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission();
     const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
     const iosSettings = DarwinInitializationSettings(
       requestAlertPermission: true,
@@ -33,12 +33,12 @@ class LocalNotificationHelper {
   static Future<void> scheduleDailyChallengeReminder() async {
     final isEnabled = await isNotificationsEnabled();  // Access the public method here
     if (isEnabled) {
-      final scheduledDate = _nextInstanceOfTime(19, 0); // 7 PM
+      final scheduledDate = _nextInstanceOfTime(0, 6); // 7 PM
 
       await _notificationsPlugin.zonedSchedule(
-        0,
-        'Daily Challenge Reminder',
-        'Time to complete today\'s challenge!',
+        111,
+        'Daily Sudoku Challenge',
+        'Time to complete today\'s Sudoku challenge!',
         scheduledDate,
         const NotificationDetails(
           android: AndroidNotificationDetails(
@@ -75,20 +75,20 @@ class LocalNotificationHelper {
       permissionGranted = permissionStatus.isGranted;
 
       // Request SCHEDULE_EXACT_ALARM for Android 12+
-      if (permissionGranted && await Permission.scheduleExactAlarm.isDenied) {
+      if (permissionGranted) {
         final alarmStatus = await Permission.scheduleExactAlarm.request();
         permissionGranted = alarmStatus.isGranted;
         print("Schedule exact alarm permission: $alarmStatus");
       }
     }
-    // Android: Request permission for API 33+ (Android 13)
-    if (Platform.isAndroid && await Permission.scheduleExactAlarm.isDenied) {
-      final permissionStatus = await Permission.notification.request();
-      permissionGranted = permissionStatus.isGranted;
-      print("Android notification permission: $permissionStatus");
-    }
+    // // Android: Request permission for API 33+ (Android 13)
+    // if (Platform.isAndroid ) {
+    //   final permissionStatus = await Permission.notification.request();
+    //   permissionGranted = permissionStatus.isGranted;
+    //   print("Android notification permission: $permissionStatus");
+    // }
 
-    if (await Permission.notification.status == true) {
+    if (await Permission.notification.status.isGranted == true) {
       await scheduleDailyChallengeReminder();
       print("Notifications scheduled after permission granted");
     } else {
@@ -113,6 +113,33 @@ class LocalNotificationHelper {
     }
   }
 
+  static Future<void> setupTimezoneFromDevice() async {
+    // Step 1: Initialize timezone database
+    tz.initializeTimeZones();
+
+    // Step 2: Get current offset
+    final Duration currentOffset = DateTime.now().timeZoneOffset;
+
+    // Step 3: Try to find a location with a matching offset
+    final List<String> timeZoneNames = tz.timeZoneDatabase.locations.keys.toList();
+
+    String? matchedTimeZone;
+    for (final name in timeZoneNames) {
+      final location = tz.getLocation(name);
+      final now = tz.TZDateTime.now(location);
+      if (now.timeZoneOffset == currentOffset) {
+        matchedTimeZone = name;
+        break;
+      }
+    }
+
+    // Fallback in case no perfect match is found
+    matchedTimeZone ??= 'UTC';
+
+    // Step 4: Set it
+    tz.setLocalLocation(tz.getLocation(matchedTimeZone));
+    print('Using fallback-matched timezone: $matchedTimeZone');
+  }
   /// Returns true if notifications are enabled, false otherwise
   static Future<bool> isNotificationsEnabled() async {
     final prefs = await SharedPreferences.getInstance();
@@ -137,6 +164,19 @@ class LocalNotificationHelper {
   }
 
   Future<void> scheduleNotificationEverySecond() async {
+    // await _notificationsPlugin.show(
+    //   999,
+    //   'Test Notification',
+    //   'This is a simple test',
+    //   const NotificationDetails(
+    //     android: AndroidNotificationDetails(
+    //       'test_channel',
+    //       'Test Channel',
+    //       importance: Importance.max,
+    //       priority: Priority.high,
+    //     ),
+    //   ),
+    // );
     const notificationDetails = NotificationDetails(
       android: AndroidNotificationDetails(
         'test_channel_id',
@@ -154,17 +194,16 @@ class LocalNotificationHelper {
 
     // Schedule 5 notifications, 1 second apart
     for (int i = 0; i < 5; i++) {
-      final scheduledTime = tz.TZDateTime.now(tz.local).add(Duration(seconds: i ));
+      final now = tz.TZDateTime.now(tz.local);
+      final scheduledTime = now.add(Duration(seconds: i + 30)); // safer buffer
 
       await _notificationsPlugin.zonedSchedule(
-        i, // ID (can be unique or static)
+        999+i, // ID (can be unique or static)
         'Test Reminder ${i + 1}', // Title
         'This is test notification ${i + 1}!', // Body
         scheduledTime, // The scheduled time
         notificationDetails,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        matchDateTimeComponents: DateTimeComponents.time,
-        payload: 'test_$i',
       );
       print("Scheduled notification $i at $scheduledTime");
     }
