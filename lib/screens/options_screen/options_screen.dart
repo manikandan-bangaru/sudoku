@@ -41,7 +41,7 @@ class _OptionsScreenState extends State<OptionsScreen>
   void initState() {
     super.initState();
     onStateChange = () => setState(() {});
-    PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+    PackageInfo.fromPlatform().then((PackageInfo packageInfo)  {
       String appName = packageInfo.appName;
       String packageName = packageInfo.packageName;
       setState(() {
@@ -139,14 +139,14 @@ class _OptionsScreenState extends State<OptionsScreen>
                         ),
                       ],
                     ),
-                const SizedBox(height: 20,),
-                const Row(
+                    if (isInAppPurchaseAvailable) const SizedBox(height: 20,),
+                    if (isInAppPurchaseAvailable) const Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(" In App Purchase",style: TextStyle(fontSize: 18),),
                   ],
                 ),
-                OptionGroup(
+                if (isInAppPurchaseAvailable) OptionGroup(
                   options: [
                     OptionWidget(
                       title: "Remove Ads".tr(),
@@ -163,9 +163,7 @@ class _OptionsScreenState extends State<OptionsScreen>
                       iconColor: Colors.green,
                       iconData: Icons.refresh,
                       onTap: (){
-                        GameRoutes.goTo(GameRoutes.inAppPurchase,
-                            enableBack: true)
-                        ;
+                        InAppPurchaseHelper.reStorePurchase();
                       },
                     )
                     ]

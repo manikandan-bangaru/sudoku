@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sudoku/app-purchase/InAppPurchaseHelper.dart';
 import '/services/localization_manager.dart';
 import 'alocalNotification/localNotificationHelper.dart';
 import 'utils/game_routes.dart';
@@ -12,6 +13,7 @@ Future<void> main() async {
   await EasyLocalization.ensureInitialized();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await LocalNotificationHelper.initialize();
+  await InAppPurchaseHelper.checkStoreAvailability();
   runApp(
     EasyLocalization(
       path: LocalizationManager.path,

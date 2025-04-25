@@ -11,6 +11,9 @@ import 'package:lottie/lottie.dart';
 import 'consumable_store.dart';
 
 final bool _kAutoConsume = Platform.isIOS || true;
+bool isInAppPurchaseAvailable = false;
+// MARK: Added to check if the store is available in main.dart
+//   await InAppPurchaseHelper.checkStoreAvailability();
 
 const String _kConsumableId = 'sudoku';
 const String _kUpgradeId = 'sudoku_subscription';
@@ -22,11 +25,24 @@ const List<String> _kProductIds = <String>[
   _kGoldSubscriptionId,
   _kConsumableId,
 ];
-
 class InAppPurchangeScreen extends StatefulWidget {
   InAppPurchangeScreen({super.key});
   @override
   State<InAppPurchangeScreen> createState() => _MyAppState();
+}
+
+class InAppPurchaseHelper {
+  static InAppPurchase _inAppPurchase = InAppPurchase.instance;
+  static Future<bool> isStoreAvailable() async {
+    isInAppPurchaseAvailable = await _inAppPurchase.isAvailable();
+    return isInAppPurchaseAvailable;
+  }
+  static reStorePurchase() async {
+    await _inAppPurchase.restorePurchases();
+  }
+  static Future<void> checkStoreAvailability() async {
+    isInAppPurchaseAvailable = await InAppPurchaseHelper.isStoreAvailable();
+  }
 }
 
 class _MyAppState extends State<InAppPurchangeScreen>
