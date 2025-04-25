@@ -139,37 +139,37 @@ class _OptionsScreenState extends State<OptionsScreen>
                         ),
                       ],
                     ),
-                // const SizedBox(height: 20,),
-                // const Row(
-                //   crossAxisAlignment: CrossAxisAlignment.start,
-                //   children: [
-                //     Text(" In App Purchase",style: TextStyle(fontSize: 18),),
-                //   ],
-                // ),
-                // OptionGroup(
-                //   options: [
-                //     OptionWidget(
-                //       title: "Remove Ads".tr(),
-                //       iconColor: Colors.red,
-                //       iconData: Icons.not_interested,
-                //       onTap:(){
-                //         GameRoutes.goTo(GameRoutes.inAppPurchase,
-                //             enableBack: true)
-                //         ;
-                //       },
-                //     ),
-                //     OptionWidget(
-                //       title: "Restore Purchase".tr(),
-                //       iconColor: Colors.green,
-                //       iconData: Icons.refresh,
-                //       onTap: (){
-                //         GameRoutes.goTo(GameRoutes.inAppPurchase,
-                //             enableBack: true)
-                //         ;
-                //       },
-                //     )
-                //     ]
-                // ),
+                const SizedBox(height: 20,),
+                const Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(" In App Purchase",style: TextStyle(fontSize: 18),),
+                  ],
+                ),
+                OptionGroup(
+                  options: [
+                    OptionWidget(
+                      title: "Remove Ads".tr(),
+                      iconColor: Colors.red,
+                      iconData: Icons.not_interested,
+                      onTap:(){
+                        GameRoutes.goTo(GameRoutes.inAppPurchase,
+                            enableBack: true)
+                        ;
+                      },
+                    ),
+                    OptionWidget(
+                      title: "Restore Purchase".tr(),
+                      iconColor: Colors.green,
+                      iconData: Icons.refresh,
+                      onTap: (){
+                        GameRoutes.goTo(GameRoutes.inAppPurchase,
+                            enableBack: true)
+                        ;
+                      },
+                    )
+                    ]
+                ),
                     const SizedBox(height: 20,),
                     const Row(
                       crossAxisAlignment: CrossAxisAlignment.start,

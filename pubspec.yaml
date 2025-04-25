@@ -50,6 +50,7 @@ dependencies:
   flutter_local_notifications: any
   permission_handler: any
   timezone: any
+  lottie: any
 
 dev_dependencies:
   flutter_test:
@@ -78,6 +79,7 @@ flutter:
     - assets/translations/
     - assets/images/
     - assets/html/
+    - assets/animations/
   #   - images/a_dot_ham.jpeg
 flutter_native_splash:
   color: "#ffffff"  # Background color
