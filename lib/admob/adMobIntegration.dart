@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'AdMobConstants.dart';
 
-final shouldShowAdForThisUser = true;
+bool shouldShowAdForThisUser = true;
 typedef OnAdShowCompletedCallBack = void Function(bool completed);
 
 class AdMobMobileHelper {

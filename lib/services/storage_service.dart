@@ -18,6 +18,15 @@ class StorageService {
     storageService._prefs = await SharedPreferences.getInstance();
     return storageService;
   }
+   Future<void> saveAppIsOpened() async {
+    int count = await getNumberOfAppOpenedCount();
+    count += 1;
+    await _prefs.setInt('game_opened_count', count);
+  }
+
+   Future<int> getNumberOfAppOpenedCount() async {
+    return _prefs.getInt('game_opened_count') ?? 0;
+  }
 
   Future<void> saveDifficulty(Difficulty diff) async {
     await _prefs.setString('game_difficulty', diff.name);

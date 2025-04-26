@@ -8,6 +8,9 @@ import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
 import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
 import 'package:lottie/lottie.dart';
+import 'package:sudoku/admob/adMobIntegration.dart';
+import '../services/storage_service.dart';
+import '../utils/game_routes.dart';
 import 'consumable_store.dart';
 
 final bool _kAutoConsume = Platform.isIOS || true;
@@ -15,14 +18,14 @@ bool isInAppPurchaseAvailable = false;
 // MARK: Added to check if the store is available in main.dart
 //   await InAppPurchaseHelper.checkStoreAvailability();
 
-const String _kConsumableId = 'sudoku';
+const String _kConsumableId = 'sudoku'; // Only one time purchase we are supporting
 const String _kUpgradeId = 'sudoku_subscription';
 const String _kSilverSubscriptionId = 'subscription_half_year';
 const String _kGoldSubscriptionId = 'subscription_yearly';
 const List<String> _kProductIds = <String>[
-  _kUpgradeId,
-  _kSilverSubscriptionId,
-  _kGoldSubscriptionId,
+  // _kUpgradeId,
+  // _kSilverSubscriptionId,
+  // _kGoldSubscriptionId,
   _kConsumableId,
 ];
 class InAppPurchangeScreen extends StatefulWidget {
@@ -42,6 +45,23 @@ class InAppPurchaseHelper {
   }
   static Future<void> checkStoreAvailability() async {
     isInAppPurchaseAvailable = await InAppPurchaseHelper.isStoreAvailable();
+    await hasActivePlan();
+    // Handling the in-app purchase pop up
+    final storageService = await StorageService.initialize();
+    storageService.saveAppIsOpened();
+    final count = await storageService.getNumberOfAppOpenedCount();
+    // after 5 th time opening app we will show the in-app purchase
+    if (count % 10 == 0) {
+      // show the in-app purchase dialog
+      GameRoutes.goTo(GameRoutes.inAppPurchase,
+          enableBack: true);
+    }
+  }
+  static Future<bool> hasActivePlan() async {
+    final purchased = await ConsumableStore.load();
+    final isPaidUser = purchased.contains(_kConsumableId);
+    shouldShowAdForThisUser = !isPaidUser;
+    return isPaidUser;
   }
 }
 
@@ -323,6 +343,7 @@ class _MyAppState extends State<InAppPurchangeScreen>
   Future<void> deliverProduct(PurchaseDetails purchaseDetails) async {
     if (purchaseDetails.productID == _kConsumableId) {
       await ConsumableStore.save(purchaseDetails.purchaseID!);
+      shouldShowAdForThisUser = false;
       final consumables = await ConsumableStore.load();
       setState(() {
         _purchasePending = false;

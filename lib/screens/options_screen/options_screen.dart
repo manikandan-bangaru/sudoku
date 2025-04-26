@@ -154,8 +154,7 @@ class _OptionsScreenState extends State<OptionsScreen>
                       iconData: Icons.not_interested,
                       onTap:(){
                         GameRoutes.goTo(GameRoutes.inAppPurchase,
-                            enableBack: true)
-                        ;
+                            enableBack: true);
                       },
                     ),
                     OptionWidget(
