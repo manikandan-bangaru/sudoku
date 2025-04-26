@@ -3,6 +3,7 @@ import 'dart:developer' as dev;
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:sudoku/admob/adMobIntegration.dart';
 
 import '../../constant/enums.dart';
 import '../../constant/game_constants.dart';
@@ -390,7 +391,7 @@ class GameScreenProvider with ChangeNotifier {
 
   Future<void> _onAdRewardCallBack(bool isSuccess) async {
       if (isSuccess) {
-          hints = 3;
+          hints = shouldShowAdForThisUser ? 3 : 100;
           mistakes = 0;
       }
   }

@@ -25,25 +25,27 @@ class _BannerAdmobState extends State<BannerAdWidget>{
   @override
   void initState() {
     super.initState();
-    _bannerAd = BannerAd(
-      adUnitId: AdMobConstants.bannerAdUnitId,
-      request: const AdRequest(),
-      size: AdSize.largeBanner,
-      listener: BannerAdListener(
-        onAdLoaded: (_) {
-          setState(() {
-            _bannerReady = true;
-          });
-        },
-        onAdFailedToLoad: (ad, err) {
-          setState(() {
-            _bannerReady = false;
-          });
-          ad.dispose();
-        },
-      ),
-    );
-    _bannerAd.load();
+    if (shouldShowAdForThisUser) {
+      _bannerAd = BannerAd(
+        adUnitId: AdMobConstants.bannerAdUnitId,
+        request: const AdRequest(),
+        size: AdSize.largeBanner,
+        listener: BannerAdListener(
+          onAdLoaded: (_) {
+            setState(() {
+              _bannerReady = true;
+            });
+          },
+          onAdFailedToLoad: (ad, err) {
+            setState(() {
+              _bannerReady = false;
+            });
+            ad.dispose();
+          },
+        ),
+      );
+      _bannerAd.load();
+    }
   }
 
   @override
@@ -54,11 +56,18 @@ class _BannerAdmobState extends State<BannerAdWidget>{
 
   @override
   Widget build(BuildContext context) {
-    return _bannerReady?SizedBox(
-      width: _bannerAd.size.width.toDouble(),
-      height: height,
-      child: AdWidget(ad: _bannerAd),
-    ):Container(width: _bannerAd.size.width.toDouble(),
-        height: height);
+    if (shouldShowAdForThisUser) {
+      return _bannerReady?SizedBox(
+        width: _bannerAd.size.width.toDouble(),
+        height: height,
+        child: AdWidget(ad: _bannerAd),
+      ):Container(width: _bannerAd.size.width.toDouble(),
+          height: height);
+    } else {
+      return Container(
+        width: 0,
+        height: 0,
+      );
+    }
   }
 }

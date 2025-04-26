@@ -46,7 +46,8 @@ class InAppPurchaseHelper {
   static Future<void> checkStoreAvailability() async {
     isInAppPurchaseAvailable = await InAppPurchaseHelper.isStoreAvailable();
     await hasActivePlan();
-    // Handling the in-app purchase pop up
+  }
+  static Future<void> showPopUp() async {
     final storageService = await StorageService.initialize();
     storageService.saveAppIsOpened();
     final count = await storageService.getNumberOfAppOpenedCount();
@@ -172,7 +173,9 @@ class _MyAppState extends State<InAppPurchangeScreen>
             ),
             const SizedBox(height: 10),
             const Text(
-              'Enjoy an ad-free experience to play Sudoku without any interruptions.',
+              '🚫 No Ads — Enjoy a seamless Sudoku experience with zero interruptions.\n\n'
+                  '💡 100 Hints Every Game — Play smarter, solve faster, and never get stuck!\n\n'
+                  '🔁 Unlimited Game Resumes — Pick up right where you left off, even after game over!',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 16),
             ),

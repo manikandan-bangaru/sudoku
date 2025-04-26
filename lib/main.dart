@@ -32,11 +32,13 @@ class MyApp extends StatelessWidget {
     print("View did appear!");
     // You can also show dialogs/snackbars/etc. here
     LocalNotificationHelper().requestPermissionAndScheduleNotification();
+    InAppPurchaseHelper.showPopUp();
   }
 
 
   @override
   Widget build(BuildContext context) {
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _onViewDidAppear(context);
     });

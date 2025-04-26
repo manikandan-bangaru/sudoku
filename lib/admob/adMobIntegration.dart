@@ -116,7 +116,7 @@ class AdMobMobileHelper {
   showInterstitialAd(
     OnAdShowCompletedCallBack onAdShowCompletedCallBack,
   ) async {
-    if (myInterstitialAd == null) {
+    if (myInterstitialAd == null && shouldShowAdForThisUser) {
       loadInterstitialAd();
       onAdShowCompletedCallBack(false);
     } else if (shouldShowAdForThisUser) {
@@ -159,7 +159,7 @@ class AdMobMobileHelper {
   }
 
   showRewardAd({required Function(bool) isSuccess}) {
-    if (myRewardAd == null) {
+    if (myRewardAd == null && shouldShowAdForThisUser) {
       loadrewardAd(loadCallBackStatus: (bool status) {
         if (status) {
           // Ad Reward Loaded Success Fully

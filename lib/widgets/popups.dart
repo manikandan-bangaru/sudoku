@@ -12,13 +12,14 @@ import 'popup/popup_game_stats.dart';
 import 'popup/useful_tip_widget.dart';
 
 class Popup {
+  static String hintSubTitleforAd = shouldShowAdForThisUser ? "Wound you like to watch Ad for 3 Extra hints?" : "";
   static Future<void> getMoreHints(
       {required Function(bool) onAdRewardCallBack,}) {
     Widget content = Padding(
       padding: GameSizes.getSymmetricPadding(0.05, 0.02)
           .copyWith(bottom: GameSizes.getHeight(0.02)),
       child: Text(
-        "You have exhausted all of your Hint's. Wound you like to watch Ad for 3 Extra hints? ",
+        "You have exhausted all of your Hint's. ${hintSubTitleforAd}  ",
         textAlign: TextAlign.center,
         style: TextStyle(
           color: GameColors.popupContentText,
@@ -29,12 +30,19 @@ class Popup {
 
     List<Widget> actions = [
       RoundedButton(
-          buttonText: "Watch an Ad",
+          buttonText:  (shouldShowAdForThisUser) ? "Watch an Ad" : "Get 100 Hints",
           onPressed: () {
-          AdMobMobileHelper.sharedInstance.showRewardAd( isSuccess: (bool isSuccess) {
-            Navigator.pop(dialogContext);
-            onAdRewardCallBack(isSuccess);
-          });
+            if (shouldShowAdForThisUser) {
+              AdMobMobileHelper.sharedInstance.showRewardAd(
+                  isSuccess: (bool isSuccess) {
+                    Navigator.pop(dialogContext);
+                    onAdRewardCallBack(isSuccess);
+                  });
+            } else {
+              // For paid User
+              Navigator.pop(dialogContext);
+              onAdRewardCallBack(true);
+            }
           }),
       RoundedButton(
           whiteButton: true,
@@ -76,13 +84,19 @@ class Popup {
             onExit();
             Navigator.pop(GameRoutes.navigatorKey.currentContext!);
           }),
-      RoundedButton(
-          buttonText: "Watch Ad to Continue",
+       RoundedButton(
+          buttonText:  (shouldShowAdForThisUser) ? "Watch Ad to Continue" : "Continue Same Game",
           onPressed: () {
-            AdMobMobileHelper.sharedInstance.showRewardAd( isSuccess: (bool isSuccess) {
+            if (shouldShowAdForThisUser) {
+              AdMobMobileHelper.sharedInstance.showRewardAd(
+                  isSuccess: (bool isSuccess) {
+                    Navigator.pop(dialogContext);
+                    onAdRewardCallBack(isSuccess);
+                  });
+            } else {
               Navigator.pop(dialogContext);
-              onAdRewardCallBack(isSuccess);
-            });
+              onAdRewardCallBack(true);
+            }
           }),
       RoundedButton(
           buttonText: "newGame".tr(),

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import '../admob/adMobIntegration.dart';
 import '/constant/enums.dart';
 import '/constant/game_constants.dart';
 import '/models/board_model.dart';
@@ -20,8 +21,8 @@ class GameModel {
     this.mistakes = 0,
     this.score = 0,
     this.time = 0,
-    this.hints = 3,
-  });
+    int? hints,
+  }) : hints = hints ?? (shouldShowAdForThisUser ? 3 : 100);
 
   factory GameModel.fromJson(Map<String, dynamic> json) {
     return GameModel(
